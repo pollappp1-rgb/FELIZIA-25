@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Felizia Inter Campus Fest – Digital System</title>
+<style>
+  :root {
+    /* Traditional look: ivory + gold + deep green */
+    --bg: #f6f2e8;
+    --panel: #ffffff;
+    --card: #fffdf7;
+    --border: #dcd2bf;
+    --light: #1b1b1b;
+    --muted: #6b6b6b;
+    --accent: #106a3b;    /* deep green */
+    --accent-2: #b88917;  /* warm gold */
+    --shadow: rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(184,137,23,0.06), transparent),
+                linear-gradient(#f7f3ea, #f4efe4);
+    color: var(--light);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(8px);
+  }
+  #app { max-width: 1200px; margin: 0 auto; padding: 18px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: grid; place-items: center; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .brand h1 { margin: 0; font-size: 18px; font-family: Georgia, "Times New Roman", serif; letter-spacing: .2px; }
+  .sub { font-size: 12px; color: var(--muted); }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .spacer { flex: 1; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 20px var(--shadow);
+  }
+  .card h2 {
+    margin: 0 0 6px 0; font-size: 18px; font-family: Georgia, "Times New Roman", serif; font-weight: 700;
+  }
+  .card h2::after {
+    content: ""; display: block; height: 2px; margin-top: 8px;
+    background: linear-gradient(to right, transparent, var(--accent-2), transparent);
+    border-radius: 2px;
+  }
+  .section-title { font-size: 16px; margin: 8px 0; font-family: Georgia, "Times New Roman", serif; }
+
+  .muted { color: var(--muted); font-size: 13px; }
+  .grid { display: grid; gap: 16px; }
+  .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 1000px) { .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; } }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 10px; cursor: pointer;
+    background: #fff; color: var(--light);
+    border: 1px solid var(--border); text-decoration: none; font-weight: 600;
+  }
+  .btn:hover { box-shadow: 0 4px 12px var(--shadow); }
+  .btn.primary { background: linear-gradient(180deg, var(--accent), #0e5934); color: #ffffff; border: 1px solid #0d4d2e; }
+  .btn.warn { background: #fff6e6; color: #8a5a00; border-color: #e7c888; }
+  .btn.danger { background: #fff1f1; color: #8a1414; border-color: #f1c0c0; }
+  .btn.small { padding: 6px 10px; font-size: 13px; border-radius: 8px; }
+
+  .tag { padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); background: #fff; color: var(--light); }
+  .tag.green { background: #f1fbf5; color: #0f5d36; border-color: #bfe2cf; }
+  .tag.blue { background: #eef6ff; color: #0a3b74; border-color: #c9def9; }
+  .tag.red { background: #fff1f1; color: #8a1414; border-color: #f1c0c0; }
+
+  .nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+  .nav .tab { padding: 8px 10px; background: #fff; border: 1px solid var(--border); border-radius: 10px; color: var(--light); cursor: pointer; }
+  .nav .tab.active { background: linear-gradient(180deg, #ffffff, #fbfaf4); border-color: var(--accent); box-shadow: 0 4px 12px var(--shadow); }
+
+  .hr { height: 1px; background: var(--border); margin: 12px 0; }
+  .input, select, textarea { width: 100%; padding: 10px 12px; background: #fff; color: var(--light); border: 1px solid var(--border); border-radius: 10px; }
+
+  .table-wrap { width: 100%; overflow: auto; border: 1px solid var(--border); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: 14px; }
+  th { background: #fffaf0; position: sticky; top: 0; z-index: 1; }
+
+  .notice { padding: 10px 12px; border: 1px dashed var(--border); border-radius: 12px; background: #fffaf0; color: var(--muted); font-size: 13px; }
+
+  /* Editor fields on image */
+  .poster-canvas-wrap { position: relative; background: #000; border: 1px solid var(--border); border-radius: 12px; padding: 10px; display: grid; place-items: center; }
+  .poster-stage { position: relative; }
+  .poster-field { position: absolute; border: 1px dashed rgba(184,137,23,0.45); border-radius: 4px; background: rgba(184,137,23,0.07); cursor: move; }
+  .poster-field.selected { box-shadow: 0 0 0 1px var(--accent-2) inset; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo" id="brand-logo">FZ</div>
+    <div>
+      <h1>Felizia Inter Campus Fest</h1>
+      <div class="sub">Muhyissunna Students' Association • Event Crew + Team Portal</div>
+    </div>
+    <div class="spacer"></div>
+    <div id="header-session" class="row"></div>
+  </div>
+</header>
+<div id="app"></div>
+
+<script>
+"use strict";
+
+/* ------------------------------
+   Data Store
+--------------------------------*/
+const Store = {
+  key: "feliziaFestData.v3",
+  defaults: () => ({
+    meta: { createdAt: Date.now(), version: 3 },
+    eventInfo: { eventTitle: "Felizia Inter Campus Fest", orgName: "Muhyissunna Students' Association" },
+    brand: { logoDataUrl: null, faviconDataUrl: null, accent: "#106a3b", accent2: "#b88917" },
+    eventUser: { username: "admin", password: "felizia" },
+    portalLocked: false,
+    categories: ["Lower", "Primary", "Minor", "Major", "Popular"],
+    teams: [
+      { id: "qairuwan", name: "Qairuwan", password: "team123" },
+      { id: "rabath", name: "Rabath", password: "team123" },
+      { id: "fustat", name: "Fustat", password: "team123" },
+      { id: "qazween", name: "Qazween", password: "team123" }
+    ],
+    competitions: [],            // {id,name,category,isGroup,teamEntryLimit,maxGroupSize?,date?,time?,locked?}
+    students: [],                // {id,teamId,chestNo,name,category}
+    entries: [],                 // {id,teamId,competitionId,entryType,memberStudentIds[],createdAt}
+    attendance: [],              // {id,competitionId,entryId,present,code?,markedAt}
+    results: [],                 // {id,competitionId,entryId,rankLabel,pointsAwarded,judgeNotes?,timestamp}
+    adjustments: [],
+    posters: { templates: [] },  // Poster templates
+    chest: { templates: [] }     // Chest card templates
+  }),
+  load() {
+    try {
+      const raw = localStorage.getItem(this.key);
+      if (!raw) {
+        const base = this.defaults();
+        localStorage.setItem(this.key, JSON.stringify(base));
+        return base;
+      }
+      const data = JSON.parse(raw);
+      if (!data.posters) data.posters = { templates: [] };
+      if (!data.chest) data.chest = { templates: [] };
+      if (!data.brand) data.brand = { logoDataUrl: null, faviconDataUrl: null, accent: "#106a3b", accent2: "#b88917" };
+      if (!data.eventInfo) data.eventInfo = { eventTitle: "Felizia Inter Campus Fest", orgName: "Muhyissunna Students' Association" };
+      data.meta.version = 3;
+      return data;
+    } catch (e) {
+      console.error("Load failed", e);
+      const base = this.defaults();
+      localStorage.setItem(this.key, JSON.stringify(base));
+      return base;
+    }
+  },
+  save(data) { localStorage.setItem(this.key, JSON.stringify(data)); },
+  clear() { localStorage.removeItem(this.key); }
+};
+
+/* ------------------------------
+   App
+--------------------------------*/
+const App = {
+  state: {
+    role: null, teamId: null, user: null,
+    eventTab: "setup",
+    teamTab: "dashboard",
+    posterTab: "generate",
+    posterSelectedTemplateId: null,
+    posterEditorTemplateId: null,
+    posterEditorSelectedFieldId: null,
+    ebcTeamFilter: "",
+    chestTab: "generate",
+    chestEditorTemplateId: null,
+    chestEditorSelectedFieldId: null
+  },
+  data: Store.load(),
+
+  // Utils
+  save() { Store.save(this.data); this.renderHeaderSession(); this.applyBrand(); },
+  reset() { this.data = Store.defaults(); this.save(); this.routeHome(); },
+  uid(p="id") { return p + "-" + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); },
+  fmtDate(d) { if (!d) return ""; try { return new Date(d).toLocaleDateString(); } catch { return d; } },
+  todayStr() { const d = new Date(); return d.toISOString().slice(0,10); },
+  esc(s) { return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[m])); },
+  sanitizeFileName(s){ return String(s).replace(/[<>:"/\\|?*\x00-\x1F]/g,"_").slice(0,120); },
+  fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); },
+  loadImage(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); },
+  wrapText(ctx, text, maxWidth){
+    if (!maxWidth) return String(text||"").split("\n");
+    const paras = String(text||"").split("\n");
+    const out = [];
+    for (const p of paras) {
+      const words = p.split(" ");
+      let line = "";
+      for (const w of words) {
+        const test = line ? line + " " + w : w;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          out.push(line); line = w;
+        } else {
+          line = test;
+        }
+      }
+      out.push(line);
+    }
+    return out;
+  },
+  replaceTokens(str, tokens, uppercase=false){
+    let out = String(str||"").replace(/\{([a-zA-Z0-9_]+)\}/g, (m, k) => tokens[k] ?? "");
+    return uppercase ? out.toUpperCase() : out;
+  },
+  async drawWrappedText(ctx, text, cfg){
+    ctx.save();
+    ctx.fillStyle = cfg.color || "#fff";
+    ctx.font = `${cfg.fontStyle||""} ${cfg.fontWeight||""} ${cfg.fontSize||24}px ${cfg.fontFamily||"Arial"}`.trim();
+    ctx.textBaseline = "top";
+    const lines = this.wrapText(ctx, text, cfg.maxWidth || 400);
+    let x = cfg.x, y = cfg.y;
+    for (const ln of lines) {
+      let drawX = x;
+      if (cfg.align === "center") { ctx.textAlign = "center"; drawX = x + (cfg.maxWidth||400)/2; }
+      else if (cfg.align === "right") { ctx.textAlign = "right"; drawX = x + (cfg.maxWidth||400); }
+      else { ctx.textAlign = "left"; }
+      if (cfg.strokeWidth && cfg.strokeWidth > 0) { ctx.lineWidth = cfg.strokeWidth; ctx.strokeStyle = cfg.strokeColor || "#000"; ctx.strokeText(ln, drawX, y); }
+      if (cfg.shadowBlur) { ctx.shadowBlur = cfg.shadowBlur; ctx.shadowColor = cfg.shadowColor || "#000"; }
+      ctx.fillText(ln, drawX, y);
+      y += Math.round((cfg.fontSize || 24) * (cfg.lineHeight || 1.25));
+    }
+    ctx.restore();
+  },
+
+  // Entities
+  getTeam(id){ return this.data.teams.find(t=>t.id===id); }
+  ,getCompetition(id){ return this.data.competitions.find(c=>c.id===id); }
+  ,getEntry(id){ return this.data.entries.find(e=>e.id===id); }
+  ,getStudent(id){ return this.data.students.find(s=>s.id===id); }
+  ,teamName(id){ const t=this.getTeam(id); return t? t.name : id; }
+
+  ,studentsByTeam(teamId){ return this.data.students.filter(s=>s.teamId===teamId); }
+  ,entriesByCompetition(compId){ return this.data.entries.filter(e=>e.competitionId===compId); }
+  ,entriesByTeam(teamId){ return this.data.entries.filter(e=>e.teamId===teamId); }
+  ,entriesByStudent(stuId){ return this.data.entries.filter(e=> e.memberStudentIds.includes(stuId)); }
+
+  ,attendanceByComp(compId){ return this.data.attendance.filter(a=>a.competitionId===compId); }
+  ,attendanceRecMapByComp(compId){ const m={}; for(const a of this.data.attendance) if(a.competitionId===compId) m[a.entryId]=a; return m; }
+
+  ,entryLabel(entry){
+    const ms = entry.memberStudentIds.map(id=>this.getStudent(id)).filter(Boolean);
+    const label = ms.map(m=> `${m.name} (#${m.chestNo})`).join(", ");
+    return entry.entryType==="group" ? `Group: ${label}` : label;
+  },
+
+  // Scoring
+  computeScores(){
+    const cats = this.data.categories, teams = this.data.teams;
+    const teamCatScores = {}, competitorPoints = {};
+    teams.forEach(t => { teamCatScores[t.id] = {}; cats.forEach(c => teamCatScores[t.id][c] = 0); });
+    for (const r of this.data.results) {
+      const e = this.getEntry(r.entryId); if (!e) continue;
+      const c = this.getCompetition(r.competitionId); if (!c) continue;
+      teamCatScores[e.teamId][c.category] += Number(r.pointsAwarded||0);
+      for (const sid of e.memberStudentIds) competitorPoints[sid] = (competitorPoints[sid]||0) + Number(r.pointsAwarded||0);
+    }
+    const perCategoryTeam = {};
+    for (const cat of cats) {
+      perCategoryTeam[cat] = teams.map(t => ({ teamId:t.id, teamName:t.name, points: teamCatScores[t.id][cat]||0 }))
+        .sort((a,b)=> b.points - a.points || a.teamName.localeCompare(b.teamName));
+    }
+    const overallTeam = teams.map(t => {
+      const total = cats.reduce((acc,c)=> acc + (teamCatScores[t.id][c]||0), 0);
+      return { teamId: t.id, teamName: t.name, points: total };
+    }).sort((a,b)=> b.points - a.points || a.teamName.localeCompare(b.teamName));
+    return { perCategoryTeam, overallTeam, competitorPoints };
+  },
+
+  // Branding
+  applyBrand(){
+    const b = this.data.brand || {};
+    document.documentElement.style.setProperty('--accent', b.accent || '#106a3b');
+    document.documentElement.style.setProperty('--accent-2', b.accent2 || '#b88917');
+    const el = document.getElementById('brand-logo');
+    if (el) {
+      if (b.logoDataUrl) {
+        el.innerHTML = `<img src="${b.logoDataUrl}" alt="logo" style="width:100%;height:100%;object-fit:cover">`;
+        el.style.background = "transparent";
+      } else {
+        el.textContent = "FZ";
+        el.style.background = "linear-gradient(135deg, var(--accent), var(--accent-2))";
+      }
+    }
+    // favicon
+    let link = document.getElementById("app-favicon");
+    if (!link) { link = document.createElement("link"); link.id = "app-favicon"; link.rel = "icon"; document.head.appendChild(link); }
+    link.href = b.faviconDataUrl || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="%23106a3b"/><text x="32" y="40" text-anchor="middle" font-size="32" fill="%23fffdf7" font-family="Georgia">F</text></svg>';
+  },
+
+  // Session/Header
+  renderHeaderSession(){
+    const el = document.getElementById("header-session");
+    if (!el) return;
+    if (this.state.role === "event") {
+      el.innerHTML = `<span class="tag green">Event Crew</span><span class="muted">Signed in as ${this.esc(this.state.user||"admin")}</span><button class="btn small" onclick="App.logout()">Logout</button>`;
+    } else if (this.state.role === "team") {
+      const team = this.getTeam(this.state.teamId);
+      el.innerHTML = `<span class="tag green">Team Portal</span><span class="muted">Team ${this.esc(team?.name||"")}</span><button class="btn small" onclick="App.logout()">Logout</button>`;
+    } else {
+      el.innerHTML = `<span class="muted">Not signed in</span>`;
+    }
+  },
+  logout(){ this.state = { ...this.state, role: null, teamId: null, user: null, eventTab: "setup", teamTab: "dashboard" }; this.renderHeaderSession(); this.routeHome(); },
+
+  // Routing
+  routeHome(){
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Event Crew Portal</h2>
+          <div class="muted">Manage competitions, attendance (with code letters), results, posters, chest cards, and scoreboards.</div>
+          <div class="hr"></div>
+          <form onsubmit="App.eventLoginSubmit(event)">
+            <div class="grid">
+              <div><label>Username</label><input class="input" id="event-username" value="admin" required></div>
+              <div><label>Password</label><input class="input" id="event-password" type="password" required></div>
+            </div>
+            <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Login as Event Crew</button><span class="muted">Default: admin / felizia</span></div>
+          </form>
+        </div>
+        <div class="card">
+          <h2>Team Portal</h2>
+          <div class="muted">Register students and enroll them into competitions. View-only when locked.</div>
+          <div class="hr"></div>
+          <form onsubmit="App.teamLoginSubmit(event)">
+            <div class="grid">
+              <div>
+                <label>Team</label>
+                <select id="team-select" class="input">${this.data.teams.map(t=>`<option value="${t.id}">${this.esc(t.name)}</option>`).join("")}</select>
+              </div>
+              <div><label>Password</label><input class="input" id="team-password" type="password" required></div>
+            </div>
+            <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Login to Team Portal</button><span class="muted">Default: team123</span></div>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <h2>How it works</h2>
+        <ul class="muted">
+          <li>Competitions per category (Lower, Primary, Minor, Major, Popular).</li>
+          <li>Teams add students (Chest No, Name, Category) and enroll them. Entries are private to teams.</li>
+          <li>Attendance tick + Code Letter. Codes show in Judge Panel and Posters.</li>
+          <li>Judge Panel: enter winners/points; auto poster generator with your templates.</li>
+          <li>Chest Cards: upload category templates; generate per-student PNGs or A4 sheets.</li>
+          <li>Category-wise lists for Entries and Students (Event Crew & Teams).</li>
+        </ul>
+      </div>
+    `;
+    this.applyBrand();
+  },
+  eventLoginSubmit(ev){
+    ev.preventDefault();
+    const u = document.getElementById("event-username").value.trim();
+    const p = document.getElementById("event-password").value.trim();
+    const creds = this.data.eventUser;
+    if (u === creds.username && p === creds.password) { this.state.role = "event"; this.state.user = u; this.renderHeaderSession(); this.renderEventPortal(); }
+    else alert("Invalid credentials.");
+  },
+  teamLoginSubmit(ev){
+    ev.preventDefault();
+    const id = document.getElementById("team-select").value;
+    const p = document.getElementById("team-password").value.trim();
+    const t = this.getTeam(id);
+    if (!t) return alert("Team not found.");
+    if (p === t.password) { this.state.role = "team"; this.state.teamId = id; this.state.user = t.name; this.renderHeaderSession(); this.renderTeamPortal(); }
+    else alert("Invalid team password.");
+  },
+
+  /* ------------------------------
+     Event Crew Portal
+  --------------------------------*/
+  renderEventPortal(){
+    const app = document.getElementById("app");
+    const tabs = [
+      { id: "setup", label: "Setup" },
+      { id: "competitions", label: "Competitions" },
+      { id: "attendance_results", label: "Attendance & Results" },
+      { id: "entries_by_category", label: "Entries by Category" },
+      { id: "students_by_category", label: "Students by Category" },
+      { id: "scoreboards", label: "Scoreboards" },
+      { id: "posters", label: "Posters" },
+      { id: "chest_cards", label: "Chest Cards" },
+      { id: "data", label: "Data" }
+    ];
+    app.innerHTML = `
+      <div class="card">
+        <div class="nav">
+          ${tabs.map(t=>`<button class="tab ${this.state.eventTab===t.id?'active':''}" onclick="App.eventSwitchTab('${t.id}')">${t.label}</button>`).join("")}
+        </div>
+        <div id="event-tab"></div>
+      </div>
+    `;
+    this.renderEventTab();
+  },
+  eventSwitchTab(id){ this.state.eventTab = id; this.renderEventPortal(); },
+  renderEventTab(){
+    const wrap = document.getElementById("event-tab"); if (!wrap) return;
+    if (this.state.eventTab === "setup") return this.eventTabSetup(wrap);
+    if (this.state.eventTab === "competitions") return this.eventTabCompetitions(wrap);
+    if (this.state.eventTab === "attendance_results") return this.eventTabAttendanceResults(wrap);
+    if (this.state.eventTab === "entries_by_category") return this.eventTabEntriesByCategory(wrap);
+    if (this.state.eventTab === "students_by_category") return this.eventTabStudentsByCategory(wrap);
+    if (this.state.eventTab === "scoreboards") return this.eventTabScoreboards(wrap);
+    if (this.state.eventTab === "posters") return this.eventTabPosters(wrap);
+    if (this.state.eventTab === "chest_cards") return this.eventTabChestCards(wrap);
+    if (this.state.eventTab === "data") return this.eventTabData(wrap);
+  },
+
+  eventTabSetup(wrap){
+    wrap.innerHTML = `
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Team Portal Lock</h2>
+          <div class="muted">Lock to stop teams from editing rosters or enrollments. Viewing stays allowed.</div>
+          <div class="hr"></div>
+          <div class="row">
+            <span class="tag ${this.data.portalLocked?'red':'green'}">${this.data.portalLocked?'Locked 🔒':'Unlocked 🔓'}</span>
+            <button class="btn ${this.data.portalLocked?'':'warn'}" onclick="App.togglePortalLock()">${this.data.portalLocked?'Unlock Portals':'Lock Portals'}</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Team Credentials</h2>
+          <div class="hr"></div>
+          <div class="grid">
+            ${this.data.teams.map(t=>`
+              <div class="row" style="gap:12px;">
+                <div class="spacer">
+                  <div><strong>${this.esc(t.name)}</strong></div>
+                  <div class="muted">ID: ${t.id}</div>
+                </div>
+                <input class="input" type="password" id="pw-${t.id}" placeholder="new password">
+                <button class="btn small" onclick="App.setTeamPassword('${t.id}')">Set</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Create Competition</h2>
+        <div class="muted">Category, type, team entry limit, and optional schedule.</div>
+        <div class="hr"></div>
+        <form onsubmit="App.createCompetition(event)">
+          <div class="grid cols-3">
+            <div><label>Name</label><input class="input" id="comp-name" required placeholder="e.g., Malayalam Elocution"></div>
+            <div><label>Category</label><select class="input" id="comp-category">${this.data.categories.map(c=>`<option>${this.esc(c)}</option>`).join("")}</select></div>
+            <div><label>Type</label><select class="input" id="comp-type"><option value="individual">Individual</option><option value="group">Group</option></select></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:10px;">
+            <div><label>Team Entry Limit</label><input class="input" id="comp-limit" type="number" min="1" step="1" value="1" required></div>
+            <div><label>Max Group Size (optional)</label><input class="input" id="comp-maxgroup" type="number" min="1" step="1"></div>
+            <div><label>Date</label><input class="input" id="comp-date" type="date"></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:10px;">
+            <div><label>Time</label><input class="input" id="comp-time" type="time"></div>
+            <div class="row" style="align-items:flex-end;"><button class="btn primary" type="submit">Add Competition</button></div>
+          </div>
+        </form>
+      </div>
+    `;
+  },
+  togglePortalLock(){ this.data.portalLocked = !this.data.portalLocked; this.save(); this.renderEventPortal(); },
+  setTeamPassword(teamId){
+    const inp = document.getElementById("pw-"+teamId);
+    const v = (inp?.value||"").trim(); if (!v) return alert("Enter a new password.");
+    const t = this.getTeam(teamId); if (!t) return;
+    t.password = v; this.save();
+    alert(`Updated password for ${t.name}.`); inp.value = "";
+  },
+  createCompetition(ev){
+    ev.preventDefault();
+    const name = document.getElementById("comp-name").value.trim();
+    const category = document.getElementById("comp-category").value;
+    const type = document.getElementById("comp-type").value;
+    const limit = parseInt(document.getElementById("comp-limit").value||"0",10);
+    const maxGroup = document.getElementById("comp-maxgroup").value;
+    const date = document.getElementById("comp-date").value||null;
+    const time = document.getElementById("comp-time").value||null;
+    if (!name) return alert("Name required.");
+    if (!this.data.categories.includes(category)) return alert("Invalid category.");
+    if (!(limit > 0)) return alert("Limit must be >=1.");
+    this.data.competitions.push({ id:this.uid("comp"), name, category, isGroup:(type==="group"), teamEntryLimit:limit, maxGroupSize: maxGroup?parseInt(maxGroup,10):null, date, time, locked:false });
+    this.save(); alert("Competition added."); this.renderEventPortal();
+  },
+
+  eventTabCompetitions(wrap){
+    const comps = this.data.competitions.slice().sort((a,b)=> (a.category||"").localeCompare(b.category||"") || (a.date||"").localeCompare(b.date||"") || a.name.localeCompare(b.name));
+    wrap.innerHTML = `
+      <div class="row" style="margin-bottom:8px;"><h2 class="section-title">Competitions (${comps.length})</h2></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Category</th><th>Name</th><th>Type</th><th>Team Limit</th><th>Date/Time</th><th>Entries</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${comps.map(c=>{
+            const count = this.entriesByCompetition(c.id).length;
+            const dt = [c.date?this.fmtDate(c.date):"", c.time||""].filter(Boolean).join(" ");
+            return `<tr>
+              <td>${this.esc(c.category)}</td>
+              <td><strong>${this.esc(c.name)}</strong></td>
+              <td>${c.isGroup?'<span class="tag blue">Group</span>':'<span class="tag green">Individual</span>'}</td>
+              <td>${c.teamEntryLimit}</td>
+              <td>${this.esc(dt||"-")}</td>
+              <td>${count}</td>
+              <td class="row">
+                <button class="btn small" onclick="App.viewCompetition('${c.id}')">View</button>
+                <button class="btn small" onclick="App.editCompetition('${c.id}')">Edit</button>
+                <button class="btn small warn" onclick="App.toggleCompetitionLock('${c.id}')">${c.locked?'Unlock':'Lock'}</button>
+                <button class="btn small danger" onclick="App.deleteCompetition('${c.id}')">Delete</button>
+              </td>
+            </tr>`;
+          }).join("") || '<tr><td colspan="7" class="muted">No competitions yet.</td></tr>'}
+        </tbody>
+      </table></div>
+    `;
+  },
+  viewCompetition(compId){
+    const c = this.getCompetition(compId); if (!c) return;
+    const entries = this.entriesByCompetition(compId);
+    const byTeam = {};
+    for (const e of entries) { byTeam[e.teamId] = byTeam[e.teamId] || []; byTeam[e.teamId].push(e); }
+    const teams = this.data.teams.slice().sort((a,b)=>a.name.localeCompare(b.name));
+    const blocks = teams.map(t=>{
+      const list = (byTeam[t.id]||[]);
+      if (!list.length) return "";
+      return `<div class="card">
+        <div class="row"><strong>${this.esc(t.name)}</strong><span class="tag">${list.length} entries</span></div>
+        <ul class="muted" style="font-size:13px">${list.map(e=>`<li>${this.esc(this.entryLabel(e))}</li>`).join("")}</ul>
+      </div>`;
+    }).join("");
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="row" style="margin-bottom:8px;">
+        <button class="btn" onclick="App.renderEventPortal()">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn primary" onclick="App.openAttendance('${c.id}')">Attendance</button>
+        <button class="btn primary" onclick="App.openJudgePanel('${c.id}')">Judge Panel</button>
+      </div>
+      <div class="card">
+        <h2>${this.esc(c.name)}</h2>
+        <div class="muted">${this.esc(c.category)} • ${c.isGroup?"Group":"Individual"} • Team limit: ${c.teamEntryLimit} ${c.maxGroupSize?("• Max group size: "+c.maxGroupSize):""} ${c.date?("• "+this.fmtDate(c.date)):""} ${c.time?(" "+c.time):""} ${c.locked? '• <span class="tag red">Locked</span>':""}</div>
+        <div class="hr"></div>
+        <h3 class="section-title">Entries by Team</h3>
+        ${blocks || '<div class="notice">No entries yet.</div>'}
+      </div>
+    `;
+  },
+  editCompetition(compId){
+    const c = this.getCompetition(compId); if (!c) return;
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="row" style="margin-bottom:8px;"><button class="btn" onclick="App.renderEventPortal()">← Back</button></div>
+      <div class="card">
+        <h2>Edit Competition</h2>
+        <form onsubmit="App.updateCompetition(event,'${c.id}')">
+          <div class="grid cols-3">
+            <div><label>Name</label><input class="input" id="u-name" value="${this.esc(c.name)}" required></div>
+            <div><label>Category</label><select class="input" id="u-cat">${this.data.categories.map(x=>`<option ${x===c.category?'selected':''}>${this.esc(x)}</option>`).join("")}</select></div>
+            <div><label>Type</label><select class="input" id="u-type"><option value="individual" ${!c.isGroup?'selected':''}>Individual</option><option value="group" ${c.isGroup?'selected':''}>Group</option></select></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:10px;">
+            <div><label>Team Entry Limit</label><input class="input" id="u-limit" type="number" min="1" step="1" value="${c.teamEntryLimit}"></div>
+            <div><label>Max Group Size</label><input class="input" id="u-maxgroup" type="number" min="1" step="1" value="${c.maxGroupSize||""}"></div>
+            <div><label>Date</label><input class="input" id="u-date" type="date" value="${c.date||""}"></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:10px;">
+            <div><label>Time</label><input class="input" id="u-time" type="time" value="${c.time||""}"></div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <button class="btn primary" type="submit">Save</button>
+            <button class="btn" type="button" onclick="App.renderEventPortal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    `;
+  },
+  updateCompetition(ev, id){
+    ev.preventDefault();
+    const c = this.getCompetition(id); if (!c) return;
+    const name = document.getElementById("u-name").value.trim();
+    const cat = document.getElementById("u-cat").value;
+    const isGroup = document.getElementById("u-type").value === "group";
+    const limit = parseInt(document.getElementById("u-limit").value||"0",10);
+    const maxGroup = document.getElementById("u-maxgroup").value;
+    const date = document.getElementById("u-date").value||null;
+    const time = document.getElementById("u-time").value||null;
+    if (!name) return alert("Name required.");
+    if (!this.data.categories.includes(cat)) return alert("Invalid category.");
+    if (!(limit > 0)) return alert("Limit must be >=1.");
+    c.name=name; c.category=cat; c.isGroup=isGroup; c.teamEntryLimit=limit; c.maxGroupSize=maxGroup?parseInt(maxGroup,10):null; c.date=date; c.time=time;
+    this.save(); alert("Updated."); this.renderEventPortal();
+  },
+  toggleCompetitionLock(id){ const c=this.getCompetition(id); if (!c) return; c.locked = !c.locked; this.save(); this.renderEventPortal(); },
+  deleteCompetition(id){
+    const c = this.getCompetition(id); if (!c) return;
+    if (!confirm(`Delete "${c.name}" and all its entries/results?`)) return;
+    this.data.entries = this.data.entries.filter(e=>e.competitionId!==id);
+    this.data.attendance = this.data.attendance.filter(a=>a.competitionId!==id);
+    this.data.results = this.data.results.filter(r=>r.competitionId!==id);
+    this.data.competitions = this.data.competitions.filter(x=>x.id!==id);
+    this.save(); this.renderEventPortal();
+  },
+
+  eventTabAttendanceResults(wrap){
+    const comps = this.data.competitions.slice().sort((a,b)=> (a.category||"").localeCompare(b.category||"") || (a.date||"").localeCompare(b.date||"") || a.name.localeCompare(b.name));
+    wrap.innerHTML = `
+      <div class="grid">
+        ${comps.map(c=>{
+          const entries = this.entriesByCompetition(c.id).length;
+          const results = this.data.results.filter(r=>r.competitionId===c.id).length;
+          const dt = [c.date?this.fmtDate(c.date):"", c.time||""].filter(Boolean).join(" ");
+          return `<div class="card">
+            <div class="row">
+              <div>
+                <div><strong>${this.esc(c.name)}</strong></div>
+                <div class="muted">${this.esc(c.category)} • ${c.isGroup?'Group':'Individual'} • Limit: ${c.teamEntryLimit} • ${this.esc(dt||"")}</div>
+              </div>
+              <div class="spacer"></div>
+              <span class="tag">${entries} entries</span>
+              <span class="tag blue">${results} results</span>
+            </div>
+            <div class="row" style="margin-top:8px;">
+              <button class="btn" onclick="App.openAttendance('${c.id}')">Attendance</button>
+              <button class="btn" onclick="App.openJudgePanel('${c.id}')">Judge Panel</button>
+            </div>
+          </div>`;
+        }).join("") || '<div class="notice">No competitions yet.</div>'}
+      </div>
+    `;
+  },
+
+  // Attendance with Code Letter
+  openAttendance(compId){
+    const comp = this.getCompetition(compId);
+    const entries = this.entriesByCompetition(compId).slice().sort((a,b)=> this.teamName(a.teamId).localeCompare(this.teamName(b.teamId)) || this.entryLabel(a).localeCompare(this.entryLabel(b)));
+    const recMap = this.attendanceRecMapByComp(compId);
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="row" style="margin-bottom:8px;">
+        <button class="btn" onclick="App.renderEventPortal()">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn primary" onclick="App.openJudgePanel('${compId}')">Go to Judge Panel</button>
+      </div>
+      <div class="card">
+        <h2>Attendance • ${this.esc(comp.name)}</h2>
+        <div class="muted">${this.esc(comp.category)} • ${comp.isGroup?'Group':'Individual'}</div>
+        <div class="hr"></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Team</th><th>Entry</th><th style="text-align:center;">Present</th><th style="width:140px;">Code</th></tr></thead>
+            <tbody>
+              ${entries.map(e=>{
+                const r = recMap[e.id] || {};
+                return `<tr>
+                  <td>${this.esc(this.teamName(e.teamId))}</td>
+                  <td>${this.esc(this.entryLabel(e))}</td>
+                  <td style="text-align:center;"><input type="checkbox" ${r.present===true?'checked':''} onchange="App.setAttendanceCheckbox('${compId}','${e.id}', this.checked)"></td>
+                  <td><input class="input" style="max-width:120px;text-transform:uppercase" value="${this.esc(r.code||"")}" placeholder="A" oninput="App.setAttendanceCode('${compId}','${e.id}', this.value)"></td>
+                </tr>`;
+              }).join("") || '<tr><td colspan="4" class="muted">No entries.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn" onclick="App.markAllAttendance('${compId}', true)">Mark All Present</button>
+          <button class="btn" onclick="App.autoAssignCodes('${compId}')">Auto-Assign Codes (A..Z)</button>
+          <button class="btn danger" onclick="App.clearAllCodes('${compId}')">Clear All Codes</button>
+        </div>
+      </div>
+    `;
+  },
+  setAttendanceCheckbox(compId, entryId, checked){
+    const idx = this.data.attendance.findIndex(a=>a.competitionId===compId && a.entryId===entryId);
+    if (checked) {
+      if (idx>=0) { this.data.attendance[idx].present = true; this.data.attendance[idx].markedAt = Date.now(); }
+      else this.data.attendance.push({ id:this.uid("att"), competitionId:compId, entryId, present:true, markedAt:Date.now() });
+    } else {
+      if (idx>=0) this.data.attendance.splice(idx,1);
+    }
+    this.save();
+  },
+  setAttendanceCode(compId, entryId, raw){
+    const code = String(raw||"").toUpperCase().replace(/[^A-Z0-9\- ]/g,"").slice(0,8);
+    let rec = this.data.attendance.find(a=>a.competitionId===compId && a.entryId===entryId);
+    if (!rec) {
+      if (!code) return;
+      rec = { id:this.uid("att"), competitionId:compId, entryId, present:true, code, markedAt:Date.now() };
+      this.data.attendance.push(rec);
+    } else {
+      rec.code = code;
+      if (code && rec.present!==true) rec.present = true;
+      rec.markedAt = Date.now();
+    }
+    this.save();
+  },
+  markAllAttendance(compId, present){
+    for (const e of this.entriesByCompetition(compId)) {
+      let r = this.data.attendance.find(a=>a.competitionId===compId && a.entryId===e.id);
+      if (r) { r.present = present; r.markedAt=Date.now(); }
+      else this.data.attendance.push({ id:this.uid("att"), competitionId:compId, entryId:e.id, present, markedAt:Date.now() });
+    }
+    this.save(); this.openAttendance(compId);
+  },
+  codeFromIndex(i){ let n=i, s=""; while(true){ s=String.fromCharCode(65+(n%26))+s; n=Math.floor(n/26)-1; if(n<0) break; } return s; },
+  autoAssignCodes(compId){
+    const recMap = this.attendanceRecMapByComp(compId);
+    const present = this.entriesByCompetition(compId).filter(e=> recMap[e.id]?.present===true)
+      .sort((a,b)=> this.teamName(a.teamId).localeCompare(this.teamName(b.teamId)) || this.entryLabel(a).localeCompare(this.entryLabel(b)));
+    present.forEach((e,idx)=>{
+      const code=this.codeFromIndex(idx);
+      let r=recMap[e.id];
+      if (!r) { r={ id:this.uid("att"), competitionId:compId, entryId:e.id, present:true, code, markedAt:Date.now() }; this.data.attendance.push(r); }
+      else { r.present=true; r.code=code; r.markedAt=Date.now(); }
+    });
+    this.save(); this.openAttendance(compId);
+  },
+  clearAllCodes(compId){
+    if (!confirm("Clear all codes for this competition?")) return;
+    for (const a of this.data.attendance) if (a.competitionId===compId) a.code="";
+    this.save(); this.openAttendance(compId);
+  },
+
+  // Judge Panel (with poster template slot)
+  openJudgePanel(compId){
+    const comp = this.getCompetition(compId);
+    const entries = this.entriesByCompetition(compId);
+    const results = this.data.results.filter(r=>r.competitionId===compId);
+    const recMap = this.attendanceRecMapByComp(compId);
+    const options = entries.map(e=>{
+      const label = this.entryLabel(e);
+      const r = recMap[e.id];
+      const codeTxt = r?.code ? ` [${this.esc(r.code)}]` : "";
+      const flag = r?.present===true ? "✅" : "•";
+      return `<option value="${e.id}">${flag}${codeTxt} ${this.esc(this.teamName(e.teamId))}: ${this.esc(label)}</option>`;
+    }).join("");
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="row" style="margin-bottom:8px;">
+        <button class="btn" onclick="App.renderEventPortal()">← Back</button>
+        <div class="spacer"></div>
+        <button class="btn" onclick="App.openAttendance('${compId}')">Go to Attendance</button>
+        <label class="btn">
+          Upload Poster Template(s)
+          <input type="file" accept="image/*,.psd" multiple style="display:none" onchange="App.quickUploadTemplates(event)">
+        </label>
+        <button class="btn primary" onclick="App.openPosterGenerator('${compId}')">Generate Poster</button>
+      </div>
+      <div class="card">
+        <h2>Judge Panel • ${this.esc(comp.name)}</h2>
+        <div class="muted">${this.esc(comp.category)} • ${comp.isGroup?'Group':'Individual'}</div>
+        <div class="hr"></div>
+        <form onsubmit="App.addResult(event,'${compId}')">
+          <div class="grid cols-3">
+            <div><label>Winner Entry</label><select id="res-entry" class="input" required><option value="">Select entry</option>${options}</select></div>
+            <div><label>Position Label</label><input class="input" id="res-rank" required placeholder="e.g., 1st, 2nd, 3rd"></div>
+            <div><label>Points Awarded</label><input class="input" id="res-points" type="number" min="0" step="1" required placeholder="e.g., 7"></div>
+          </div>
+          <div class="grid" style="margin-top:10px;"><div><label>Judge Notes (optional)</label><input class="input" id="res-notes" placeholder="remarks, judges..."></div></div>
+          <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Add Winner & Points</button></div>
+        </form>
+        <div class="hr"></div>
+        <h3 class="section-title">Winners</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Entry</th><th>Team</th><th>Position</th><th>Points</th><th>Notes</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${results.map(r=>{
+              const e=this.getEntry(r.entryId); const label=e?this.entryLabel(e):"(deleted)"; const team=e?this.teamName(e.teamId):"-";
+              return `<tr>
+                <td>${this.esc(label)}</td><td>${this.esc(team)}</td><td>${this.esc(r.rankLabel)}</td><td>${r.pointsAwarded}</td><td>${this.esc(r.judgeNotes||"")}</td>
+                <td><button class="btn small" onclick="App.editResult('${r.id}')">Edit</button><button class="btn small danger" onclick="App.deleteResult('${r.id}','${compId}')">Delete</button></td>
+              </tr>`;
+            }).join("") || '<tr><td colspan="6" class="muted">No winners yet.</td></tr>'}
+          </tbody>
+        </table></div>
+      </div>
+    `;
+  },
+  addResult(ev, compId){
+    ev.preventDefault();
+    const entryId = document.getElementById("res-entry").value;
+    const rank = document.getElementById("res-rank").value.trim();
+    const points = parseInt(document.getElementById("res-points").value||"0",10);
+    const notes = document.getElementById("res-notes").value.trim();
+    if (!entryId) return alert("Select entry.");
+    if (!rank) return alert("Position label required.");
+    if (isNaN(points)) return alert("Enter valid points.");
+    this.data.results.push({ id:this.uid("res"), competitionId:compId, entryId, rankLabel:rank, pointsAwarded:points, judgeNotes:notes||null, timestamp:Date.now() });
+    this.save(); this.openJudgePanel(compId);
+  },
+  editResult(resId){
+    const r = this.data.results.find(x=>x.id===resId); if (!r) return;
+    const nr = prompt("Update position label:", r.rankLabel); if (nr===null) return;
+    const np = prompt("Update points awarded:", String(r.pointsAwarded)); if (np===null) return;
+    const npi = parseInt(np,10); if (isNaN(npi)) return alert("Invalid points.");
+    const nn = prompt("Update notes (optional):", r.judgeNotes||"");
+    r.rankLabel = nr.trim()||r.rankLabel; r.pointsAwarded = npi; r.judgeNotes=(nn||"").trim()||null; r.timestamp=Date.now();
+    this.save(); this.openJudgePanel(r.competitionId);
+  },
+  deleteResult(resId, compId){
+    if (!confirm("Delete this result?")) return;
+    this.data.results = this.data.results.filter(x=>x.id!==resId); this.save(); this.openJudgePanel(compId);
+  },
+
+  // Category-wise views
+  entriesByCategory(cat, teamId=null){
+    const comps = this.data.competitions.filter(c=>c.category===cat);
+    const list = [];
+    for (const c of comps) {
+      const recMap = this.attendanceRecMapByComp(c.id);
+      const entries = this.entriesByCompetition(c.id).filter(e=>!teamId || e.teamId===teamId);
+      for (const e of entries) {
+        const r = recMap[e.id];
+        list.push({ compName:c.name, teamName:this.teamName(e.teamId), entryLabel:this.entryLabel(e), present:r?.present===true, code:r?.code||"" });
+      }
+    }
+    return list.sort((a,b)=> a.compName.localeCompare(b.compName) || a.teamName.localeCompare(b.teamName) || a.entryLabel.localeCompare(b.entryLabel));
+  },
+  eventTabEntriesByCategory(wrap){
+    const teamId = this.state.ebcTeamFilter || "";
+    const teamOptions = this.data.teams.map(t=>`<option value="${t.id}" ${teamId===t.id?'selected':''}>${this.esc(t.name)}</option>`).join("");
+    const blocks = this.data.categories.map(cat=>{
+      const rows = this.entriesByCategory(cat, teamId||null);
+      const body = rows.length? rows.map(r=>`<tr><td>${this.esc(r.compName)}</td><td>${this.esc(r.teamName)}</td><td>${this.esc(r.entryLabel)}</td><td>${r.present?"✅":""}</td><td>${this.esc(r.code)}</td></tr>`).join("")
+                             : '<tr><td colspan="5" class="muted">No entries.</td></tr>';
+      return `<div class="card"><h2>${this.esc(cat)}</h2><div class="table-wrap"><table><thead><tr><th>Competition</th><th>Team</th><th>Entry</th><th>Present</th><th>Code</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+    }).join("");
+    wrap.innerHTML = `
+      <div class="row" style="margin-bottom:10px;">
+        <div class="spacer"></div>
+        <div style="min-width:240px;"><label>Filter by Team</label><select id="ebc-team" class="input" onchange="App.setEbcTeamFilter(this.value)"><option value="">All teams</option>${teamOptions}</select></div>
+      </div>
+      <div class="grid">${blocks}</div>
+    `;
+  },
+  setEbcTeamFilter(v){ this.state.ebcTeamFilter = v||""; this.renderEventPortal(); },
+
+  eventTabStudentsByCategory(wrap){
+    const blocks = this.data.categories.filter(c=>c!=="Popular").map(cat=>{
+      const studs = this.data.students.filter(s=>s.category===cat).sort((a,b)=> String(a.chestNo||"").localeCompare(String(b.chestNo||"")));
+      const body = studs.length? studs.map(s=>`<tr><td>#${this.esc(s.chestNo)}</td><td>${this.esc(s.name)}</td><td>${this.esc(this.teamName(s.teamId))}</td></tr>`).join("")
+                               : '<tr><td colspan="3" class="muted">No students.</td></tr>';
+      return `<div class="card"><h2>${this.esc(cat)}</h2><div class="table-wrap"><table><thead><tr><th>Chest No</th><th>Name</th><th>Team</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+    }).join("");
+    wrap.innerHTML = `<div class="grid">${blocks}</div>`;
+  },
+
+  eventTabScoreboards(wrap){
+    const { perCategoryTeam, overallTeam } = this.computeScores();
+    const cats = this.data.categories;
+    wrap.innerHTML = `
+      <div class="grid">
+        <div class="card">
+          <h2>Overall Team Scoreboard</h2>
+          <div class="table-wrap"><table>
+            <thead><tr><th>#</th><th>Team</th><th>Points</th></tr></thead>
+            <tbody>${overallTeam.map((t,i)=>`<tr><td>${i+1}</td><td>${this.esc(t.teamName)}</td><td><strong>${t.points}</strong></td></tr>`).join("") || '<tr><td colspan="3" class="muted">No points yet.</td></tr>'}</tbody>
+          </table></div>
+        </div>
+        ${cats.map(cat=>`
+          <div class="card">
+            <h2>${this.esc(cat)} — Team Scoreboard</h2>
+            <div class="table-wrap"><table><thead><tr><th>#</th><th>Team</th><th>Points</th></tr></thead>
+              <tbody>${(perCategoryTeam[cat]||[]).map((t,i)=>`<tr><td>${i+1}</td><td>${this.esc(t.teamName)}</td><td><strong>${t.points}</strong></td></tr>`).join("") || '<tr><td colspan="3" class="muted">No points yet.</td></tr>'}</tbody>
+            </table></div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  },
+
+  /* ------------------------------
+     Posters (Result Poster Generator)
+  --------------------------------*/
+  eventTabPosters(wrap){
+    wrap.innerHTML = `
+      <div class="row">
+        <h2>Poster Generator</h2>
+        <div class="spacer"></div>
+        <button class="btn ${this.state.posterTab==='generate'?'primary':''}" onclick="App.switchPosterTab('generate')">Generate</button>
+        <button class="btn ${this.state.posterTab==='templates'?'primary':''}" onclick="App.switchPosterTab('templates')">Templates</button>
+      </div>
+      <div id="poster-tab"></div>
+    `;
+    if (this.state.posterTab === "generate") this.posterGenerateView();
+    else this.posterTemplatesView();
+  },
+  switchPosterTab(tab){ this.state.posterTab = tab; this.eventTabPosters(document.getElementById("event-tab")); },
+
+  posterTemplatesView(){
+    const wrap = document.getElementById("poster-tab");
+    const tpls = this.data.posters.templates;
+    wrap.innerHTML = `
+      <div class="grid">
+        <div class="card">
+          <h3>Upload Templates</h3>
+          <div class="row" style="gap:10px;">
+            <label class="btn">Upload Templates<input type="file" accept="image/*,.psd" multiple style="display:none" onchange="App.quickUploadTemplates(event)"></label>
+            <span class="muted">PSD slot provided — export PSD as PNG/JPG for rendering.</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Existing Templates (${tpls.length})</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Name</th><th>Size</th><th>Fields</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${tpls.map(t=>`<tr>
+                <td>${this.esc(t.name)}</td><td>${t.width}×${t.height}</td><td>${(t.fields||[]).length}</td>
+                <td class="row"><button class="btn small" onclick="App.openPosterTemplateEditor('${t.id}')">Edit</button><button class="btn small danger" onclick="App.deletePosterTemplate('${t.id}')">Delete</button></td>
+              </tr>`).join("") || '<tr><td colspan="4" class="muted">No templates yet.</td></tr>'}
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    `;
+  },
+  async quickUploadTemplates(ev){
+    const files = Array.from(ev.target.files||[]); if (!files.length) return;
+    let created=0, psdCount=0;
+    for (const file of files) {
+      const isPSD = /\.psd$/i.test(file.name) || file.type==='image/vnd.adobe.photoshop';
+      if (isPSD) { psdCount++; continue; }
+      if (!file.type.startsWith("image/")) continue;
+      const dataUrl = await this.fileToDataUrl(file);
+      const img = await this.loadImage(dataUrl);
+      const tpl = {
+        id: this.uid("tpl"),
+        name: file.name.replace(/\.[^.]+$/,""),
+        bgDataUrl: dataUrl,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        fields: [
+          {id:this.uid("fld"), label:"Title", x:Math.round(img.naturalWidth*0.05), y:Math.round(img.naturalHeight*0.08), maxWidth:Math.round(img.naturalWidth*0.9), fontSize:Math.max(42, Math.round(img.naturalWidth*0.06)), fontFamily:"Inter, Arial, sans-serif", color:"#ffffff", align:"center", uppercase:false, content:"{comp}"},
+          {id:this.uid("fld"), label:"Meta", x:Math.round(img.naturalWidth*0.05), y:Math.round(img.naturalHeight*0.15), maxWidth:Math.round(img.naturalWidth*0.9), fontSize:Math.max(24, Math.round(img.naturalWidth*0.03)), fontFamily:"Inter, Arial, sans-serif", color:"#ffffff", align:"center", uppercase:false, content:"{category}  {date}  {time}"},
+          {id:this.uid("fld"), label:"Winners", x:Math.round(img.naturalWidth*0.08), y:Math.round(img.naturalHeight*0.24), maxWidth:Math.round(img.naturalWidth*0.84), fontSize:Math.max(26, Math.round(img.naturalWidth*0.035)), fontFamily:"Inter, Arial, sans-serif", color:"#ffffff", align:"left", uppercase:false, content:"1) {names1} — {team1} ({points1} pts) {code1}\n2) {names2} — {team2} ({points2} pts) {code2}\n3) {names3} — {team3} ({points3} pts) {code3}"}
+        ]
+      };
+      this.data.posters.templates.push(tpl);
+      created++;
+    }
+    this.save();
+    if (psdCount) alert(`${psdCount} PSD file(s) detected. Please export as PNG/JPG for rendering.`);
+    if (created) alert(`Uploaded ${created} poster template(s). You can fine-tune positions in Edit.`);
+    if (ev && ev.target) ev.target.value = "";
+    this.posterTemplatesView();
+  },
+  openPosterTemplateEditor(tplId){
+    this.state.posterEditorTemplateId = tplId;
+    this.state.posterEditorSelectedFieldId = null;
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===tplId); if (!tpl) return;
+    const wrap = document.getElementById("event-tab");
+    wrap.innerHTML = `
+      <div class="row" style="margin-bottom:8px;"><button class="btn" onclick="App.eventTabPosters(document.getElementById('event-tab'))">← Back</button></div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Template Editor • ${this.esc(tpl.name)}</h2>
+          <div class="muted">Drag boxes. Tokens: {comp},{category},{date},{time},{rank1},{names1},{team1},{points1},{code1}…</div>
+          <div class="hr"></div>
+          <div class="poster-canvas-wrap">
+            <div class="poster-stage" id="poster-stage" style="width:${tpl.width}px;height:${tpl.height}px;">
+              <img src="${tpl.bgDataUrl}" style="width:${tpl.width}px;height:${tpl.height}px;border-radius:8px">
+              ${(tpl.fields||[]).map(f=>`
+                <div class="poster-field ${this.state.posterEditorSelectedFieldId===f.id?'selected':''}" style="left:${f.x}px;top:${f.y}px;width:${f.maxWidth}px;height:${Math.max(24,f.fontSize*1.6)}px" data-id="${f.id}" onmousedown="App.startDragPosterField(event,'${f.id}')" onclick="App.selectPosterField('${f.id}')"></div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Fields</h3>
+          <div class="row" style="margin-bottom:8px;"><button class="btn small" onclick="App.addPosterField()">+ Add Text Field</button><div class="spacer"></div><button class="btn warn small" onclick="App.renamePosterTemplate()">Rename</button></div>
+          <div id="poster-fields-list">
+            ${(tpl.fields||[]).map(f=> this.posterFieldEditorBlock(f)).join("") || '<div class="notice">No fields yet.</div>'}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+  posterFieldEditorBlock(f){
+    const tokens = ["{comp}","{category}","{date}","{time}","{rank1}","{names1}","{team1}","{points1}","{code1}","{rank2}","{names2}","{team2}","{points2}","{code2}","{rank3}","{names3}","{team3}","{points3}","{code3}"];
+    return `
+      <div class="card" style="background:#fff;border:1px dashed var(--border);margin-bottom:10px;">
+        <div class="row">
+          <strong>${this.esc(f.label||"Text Field")}</strong>
+          <div class="spacer"></div>
+          <button class="btn small" onclick="App.selectPosterField('${f.id}')">Select</button>
+          <button class="btn small danger" onclick="App.removePosterField('${f.id}')">Remove</button>
+        </div>
+        <div class="grid cols-3" style="margin-top:8px;">
+          <div><label>Label</label><input class="input" value="${this.esc(f.label||"")}" onchange="App.updatePosterField('${f.id}','label', this.value)"></div>
+          <div><label>X</label><input class="input" type="number" value="${f.x}" onchange="App.updatePosterField('${f.id}','x', parseInt(this.value||'0',10))"></div>
+          <div><label>Y</label><input class="input" type="number" value="${f.y}" onchange="App.updatePosterField('${f.id}','y', parseInt(this.value||'0',10))"></div>
+        </div>
+        <div class="grid cols-3" style="margin-top:8px;">
+          <div><label>Max Width</label><input class="input" type="number" value="${f.maxWidth}" onchange="App.updatePosterField('${f.id}','maxWidth', parseInt(this.value||'0',10))"></div>
+          <div><label>Font Size</label><input class="input" type="number" value="${f.fontSize}" onchange="App.updatePosterField('${f.id}','fontSize', parseInt(this.value||'16',10))"></div>
+          <div><label>Align</label><select class="input" onchange="App.updatePosterField('${f.id}','align', this.value)"><option value="left" ${f.align==='left'?'selected':''}>Left</option><option value="center" ${f.align==='center'?'selected':''}>Center</option><option value="right" ${f.align==='right'?'selected':''}>Right</option></select></div>
+        </div>
+        <div class="grid cols-3" style="margin-top:8px;">
+          <div><label>Font Family</label><input class="input" value="${this.esc(f.fontFamily||'Inter, Arial, sans-serif')}" onchange="App.updatePosterField('${f.id}','fontFamily', this.value)"></div>
+          <div><label>Color</label><input class="input" type="color" value="${f.color||'#000000'}" onchange="App.updatePosterField('${f.id}','color', this.value)"></div>
+          <div><label>Uppercase</label><select class="input" onchange="App.updatePosterField('${f.id}','uppercase', this.value==='yes')"><option value="no" ${!f.uppercase?'selected':''}>No</option><option value="yes" ${f.uppercase?'selected':''}>Yes</option></select></div>
+        </div>
+        <div style="margin-top:8px;">
+          <label>Content (tokens allowed)</label>
+          <textarea class="input" rows="3" onchange="App.updatePosterField('${f.id}','content', this.value)">${this.esc(f.content||"")}</textarea>
+          <div class="row small" style="gap:6px;flex-wrap:wrap;margin-top:6px;">
+            ${tokens.map(t=>`<button class="btn small" type="button" onclick="this.previousElementSibling.value += ' ${t}'; this.previousElementSibling.dispatchEvent(new Event('change'))">${t}</button>`).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+  selectPosterField(id){ this.state.posterEditorSelectedFieldId = id; this.openPosterTemplateEditor(this.state.posterEditorTemplateId); },
+  addPosterField(){
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===this.state.posterEditorTemplateId); if (!tpl) return;
+    const f = { id:this.uid("fld"), label:"Text", x:Math.round(tpl.width*0.08), y:Math.round(tpl.height*0.08), maxWidth:Math.round(tpl.width*0.84), fontSize:Math.round(tpl.width*0.05), fontFamily:"Inter, Arial, sans-serif", color:"#000000", align:"left", uppercase:false, content:"Text" };
+    tpl.fields.push(f); this.save(); this.state.posterEditorSelectedFieldId = f.id; this.openPosterTemplateEditor(tpl.id);
+  },
+  removePosterField(fid){
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===this.state.posterEditorTemplateId); if (!tpl) return;
+    tpl.fields = (tpl.fields||[]).filter(f=>f.id!==fid);
+    if (this.state.posterEditorSelectedFieldId===fid) this.state.posterEditorSelectedFieldId=null;
+    this.save(); this.openPosterTemplateEditor(tpl.id);
+  },
+  updatePosterField(fid,key,val){
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===this.state.posterEditorTemplateId); if (!tpl) return;
+    const f = (tpl.fields||[]).find(x=>x.id===fid); if (!f) return;
+    if (["x","y","maxWidth","fontSize"].includes(key)) { const n=Number(val); if (!Number.isNaN(n)) f[key]=n; }
+    else if (key==="uppercase") f.uppercase = !!val;
+    else f[key]=val;
+    this.save();
+  },
+  renamePosterTemplate(){
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===this.state.posterEditorTemplateId); if (!tpl) return;
+    const v = prompt("Rename template:", tpl.name); if (v===null) return;
+    tpl.name = (v||"").trim() || tpl.name;
+    this.save(); this.openPosterTemplateEditor(tpl.id);
+  },
+  startDragPosterField(e,fid){
+    e.preventDefault();
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===this.state.posterEditorTemplateId);
+    const f = tpl?.fields.find(x=>x.id===fid); if (!tpl || !f) return;
+    this.state._posterDrag = { tplId:tpl.id, fieldId:fid, startX:e.clientX, startY:e.clientY, startFX:f.x, startFY:f.y };
+    document.addEventListener("mousemove", this.onPosterDragMove);
+    document.addEventListener("mouseup", this.onPosterDragEnd);
+  },
+  onPosterDragMove:(e)=>{
+    const st = App.state._posterDrag; if (!st) return;
+    const tpl = (App.data.posters.templates||[]).find(t=>t.id===st.tplId);
+    const f = tpl?.fields.find(x=>x.id===st.fieldId); if (!tpl||!f) return;
+    f.x = Math.max(0, Math.min(tpl.width-10, Math.round(st.startFX+(e.clientX-st.startX))));
+    f.y = Math.max(0, Math.min(tpl.height-10, Math.round(st.startFY+(e.clientY-st.startY))));
+    App.save();
+    const el = document.querySelector(`#poster-stage .poster-field[data-id="${f.id}"]`); if (el) { el.style.left=f.x+"px"; el.style.top=f.y+"px"; }
+  },
+  onPosterDragEnd:()=>{ document.removeEventListener("mousemove", App.onPosterDragMove); document.removeEventListener("mouseup", App.onPosterDragEnd); App.state._posterDrag=null; },
+
+  posterGenerateView(){
+    const wrap = document.getElementById("poster-tab");
+    const tpls = this.data.posters.templates;
+    const comps = this.data.competitions.slice().sort((a,b)=> (a.date||"").localeCompare(b.date||"") || a.name.localeCompare(b.name));
+    const defTplId = this.state.posterSelectedTemplateId || (tpls[0]?.id || "");
+    this.state.posterSelectedTemplateId = defTplId;
+    wrap.innerHTML = `
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Generate a Poster</h3>
+          <div class="grid cols-3">
+            <div><label>Template</label><select id="gen-tpl" class="input" onchange="App.state.posterSelectedTemplateId=this.value">${tpls.map(t=>`<option value="${t.id}" ${t.id===defTplId?'selected':''}>${this.esc(t.name)}</option>`).join("") || '<option value="">No templates</option>'}</select></div>
+            <div><label>Competition</label><select id="gen-comp" class="input">${comps.map(c=>`<option value="${c.id}">${this.esc(c.name)} — ${this.esc(c.category)}</option>`).join("") || '<option value="">No competitions</option>'}</select></div>
+            <div><label>Top N Winners</label><input id="gen-topn" class="input" type="number" min="1" step="1" value="3"></div>
+          </div>
+          <div class="row" style="margin-top:10px;"><button class="btn primary" onclick="App.generatePoster()">Preview</button></div>
+        </div>
+        <div class="card">
+          <h3>Upload Templates</h3>
+          <div class="row" style="gap:10px;">
+            <label class="btn">Upload Templates<input type="file" accept="image/*,.psd" multiple style="display:none" onchange="App.quickUploadTemplates(event)"></label>
+            <span class="muted">PSD slot provided; export to PNG/JPG for rendering.</span>
+          </div>
+        </div>
+      </div>
+      <div id="poster-preview-area"></div>
+    `;
+  },
+  buildPosterTokens(compId, topN){
+    const comp = compId ? this.getCompetition(compId) : null;
+    const res = compId ? this.data.results.filter(r=>r.competitionId===compId) : [];
+    const sorted = res.slice().sort((a,b)=> {
+      const na = parseInt(String(a.rankLabel).match(/\d+/)?.[0]||"999",10);
+      const nb = parseInt(String(b.rankLabel).match(/\d+/)?.[0]||"999",10);
+      return na - nb;
+    });
+    const recMap = this.attendanceRecMapByComp(compId);
+    const tokens = { comp: comp?.name||"", category: comp?.category||"", date: comp?.date?this.fmtDate(comp.date):"", time: comp?.time||"" };
+    for (let i=1;i<=10;i++){
+      const r = sorted[i-1];
+      if (!r || i>topN) { tokens[`rank${i}`]=tokens[`names${i}`]=tokens[`team${i}`]=tokens[`points${i}`]=tokens[`code${i}`]=""; continue; }
+      const e = this.getEntry(r.entryId);
+      const ms = (e?.memberStudentIds||[]).map(id=>this.getStudent(id)).filter(Boolean);
+      const rec = e ? recMap[e.id] : null;
+      tokens[`rank${i}`] = r.rankLabel || "";
+      tokens[`names${i}`] = ms.map(m=>m.name).join(", ");
+      tokens[`team${i}`] = e ? this.teamName(e.teamId) : "";
+      tokens[`points${i}`] = String(r.pointsAwarded || "");
+      tokens[`code${i}`] = rec?.code || "";
+    }
+    return tokens;
+  },
+  async renderPosterToCanvas(tpl, tokens){
+    const canvas = document.createElement("canvas"); canvas.width=tpl.width; canvas.height=tpl.height;
+    const ctx = canvas.getContext("2d");
+    const bg = await this.loadImage(tpl.bgDataUrl); ctx.drawImage(bg,0,0,tpl.width, tpl.height);
+    for (const f of (tpl.fields||[])) {
+      const text = this.replaceTokens(f.content||"", tokens, f.uppercase);
+      await this.drawWrappedText(ctx, text, { x:f.x, y:f.y, maxWidth:f.maxWidth||Math.round(tpl.width*0.9), fontSize:f.fontSize||28, fontFamily:f.fontFamily||"Arial", color:f.color||"#000000", align:f.align||"left" });
+    }
+    return canvas;
+  },
+  async generatePoster(){
+    const tplId = document.getElementById("gen-tpl")?.value;
+    const compId = document.getElementById("gen-comp")?.value;
+    const topN = parseInt(document.getElementById("gen-topn")?.value||"3",10);
+    if (!tplId) return alert("Select a template.");
+    if (!compId) return alert("Select a competition.");
+    const tpl = (this.data.posters.templates||[]).find(t=>t.id===tplId); if (!tpl) return alert("Template not found.");
+    const tokens = this.buildPosterTokens(compId, topN);
+    const canvas = await this.renderPosterToCanvas(tpl, tokens);
+    const area = document.getElementById("poster-preview-area");
+    area.innerHTML = `
+      <div class="card">
+        <h3>Preview</h3>
+        <div class="row" style="margin-bottom:10px;">
+          <button class="btn" onclick="App.downloadCanvas('${this.sanitizeFileName((this.getCompetition(compId)?.name||'')+' - '+tpl.name)}.png')">Download PNG</button>
+        </div>
+        <div style="overflow:auto;border:1px solid var(--border);border-radius:12px;background:#000;display:grid;place-items:center;padding:10px;">${canvas.outerHTML}</div>
+      </div>
+    `;
+    this._lastCanvas = canvas;
+  },
+  downloadCanvas(filename, mime="image/png"){ const c=this._lastCanvas; if (!c) return alert("Nothing to download."); const a=document.createElement("a"); a.download=filename; a.href=c.toDataURL(mime,0.95); document.body.appendChild(a); a.click(); document.body.removeChild(a); },
+  openPosterGenerator(compId){ this.state.eventTab="posters"; this.renderEventPortal(); const sel=document.getElementById("gen-comp"); if (sel) sel.value=compId; },
+  deletePosterTemplate(tplId){ this.data.posters.templates=(this.data.posters.templates||[]).filter(t=>t.id!==tplId); this.save(); this.posterTemplatesView(); },
+
+  /* ------------------------------
+     Chest Cards (Name + Chest + Category)
+  --------------------------------*/
+  eventTabChestCards(wrap){
+    wrap.innerHTML = `
+      <div class="row">
+        <h2>Chest Cards</h2>
+        <div class="spacer"></div>
+        <button class="btn ${this.state.chestTab==='generate'?'primary':''}" onclick="App.switchChestTab('generate')">Generate</button>
+        <button class="btn ${this.state.chestTab==='templates'?'primary':''}" onclick="App.switchChestTab('templates')">Templates</button>
+      </div>
+      <div id="chest-tab"></div>
+    `;
+    if (this.state.chestTab === "generate") this.chestGenerateView();
+    else this.chestTemplatesView();
+  },
+  switchChestTab(tab){ this.state.chestTab=tab; this.eventTabChestCards(document.getElementById("event-tab")); },
+
+  chestTemplatesView(){
+    const wrap = document.getElementById("chest-tab");
+    const tpls = this.data.chest.templates||[];
+    wrap.innerHTML = `
+      <div class="grid">
+        <div class="card">
+          <h3>Upload Templates (by Category)</h3>
+          <form onsubmit="App.quickUploadChestTemplates(event)">
+            <div class="grid cols-3">
+              <div><label>Category</label><select id="chest-tpl-cat" class="input">${this.data.categories.filter(c=>c!=="Popular").map(c=>`<option>${this.esc(c)}</option>`).join("")}</select></div>
+              <div><label>Images</label><input id="chest-tpl-files" class="input" type="file" accept="image/*,.psd" multiple required></div>
+              <div class="muted" style="align-self:end">PSD slot provided — export as PNG/JPG for rendering.</div>
+            </div>
+            <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Upload</button></div>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Existing Templates (${tpls.length})</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Name</th><th>Category</th><th>Size</th><th>Fields</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${tpls.map(t=>`<tr><td>${this.esc(t.name)}</td><td>${this.esc(t.category||"-")}</td><td>${t.width}×${t.height}</td><td>${(t.fields||[]).length}</td><td class="row"><button class="btn small" onclick="App.openChestTemplateEditor('${t.id}')">Edit</button><button class="btn small danger" onclick="App.deleteChestTemplate('${t.id}')">Delete</button></td></tr>`).join("") || '<tr><td colspan="5" class="muted">No templates yet.</td></tr>'}
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+    `;
+  },
+  async quickUploadChestTemplates(ev){
+    ev.preventDefault();
+    const cat = document.getElementById("chest-tpl-cat").value;
+    const files = Array.from(document.getElementById("chest-tpl-files").files||[]); if (!files.length) return alert("Select files.");
+    let created=0, psdCount=0;
+    for (const file of files) {
+      const isPSD = /\.psd$/i.test(file.name) || file.type==='image/vnd.adobe.photoshop';
+      if (isPSD) { psdCount++; continue; }
+      if (!file.type.startsWith("image/")) continue;
+      const dataUrl = await this.fileToDataUrl(file);
+      const img = await this.loadImage(dataUrl);
+      const tpl = {
+        id: this.uid("ctpl"),
+        name: file.name.replace(/\.[^.]+$/,""),
+        category: cat,
+        bgDataUrl: dataUrl,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        fields: [
+          { id:this.uid("cf"), label:"CHEST", x:Math.round(img.naturalWidth*0.08), y:Math.round(img.naturalHeight*0.12), maxWidth:Math.round(img.naturalWidth*0.84), fontSize:Math.round(img.naturalWidth*0.18), fontFamily:"Inter, Arial, sans-serif", color:"#000000", align:"center", uppercase:false, content:"{chest}" },
+          { id:this.uid("cf"), label:"NAME",  x:Math.round(img.naturalWidth*0.08), y:Math.round(img.naturalHeight*0.38), maxWidth:Math.round(img.naturalWidth*0.84), fontSize:Math.round(img.naturalWidth*0.08), fontFamily:"Inter, Arial, sans-serif", color:"#000000", align:"center", uppercase:false, content:"{name}" },
+          { id:this.uid("cf"), label:"CATEGORY", x:Math.round(img.naturalWidth*0.08), y:Math.round(img.naturalHeight*0.50), maxWidth:Math.round(img.naturalWidth*0.84), fontSize:Math.round(img.naturalWidth*0.06), fontFamily:"Inter, Arial, sans-serif", color:"#000000", align:"center", uppercase:false, content:"{category}" }
+        ]
+      };
+      this.data.chest.templates.push(tpl); created++;
+    }
+    this.save();
+    if (psdCount) alert(`${psdCount} PSD file(s) detected. Please export as PNG/JPG for rendering.`);
+    alert(`Uploaded ${created} chest template(s). Edit to fine-tune positions.`);
+    document.getElementById("chest-tpl-files").value = "";
+    this.chestTemplatesView();
+  },
+  deleteChestTemplate(id){ this.data.chest.templates=(this.data.chest.templates||[]).filter(t=>t.id!==id); this.save(); this.chestTemplatesView(); },
+  openChestTemplateEditor(tplId){
+    this.state.chestEditorTemplateId = tplId;
+    this.state.chestEditorSelectedFieldId = null;
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===tplId); if (!tpl) return;
+    const wrap = document.getElementById("event-tab");
+    wrap.innerHTML = `
+      <div class="row" style="margin-bottom:8px;"><button class="btn" onclick="App.eventTabChestCards(document.getElementById('event-tab'))">← Back</button></div>
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Template Editor • ${this.esc(tpl.name)} (${this.esc(tpl.category)})</h2>
+          <div class="muted">Drag boxes. Tokens: {chest}, {name}, {category}.</div>
+          <div class="hr"></div>
+          <div class="poster-canvas-wrap">
+            <div class="poster-stage" id="chest-stage" style="width:${tpl.width}px;height:${tpl.height}px;">
+              <img src="${tpl.bgDataUrl}" style="width:${tpl.width}px;height:${tpl.height}px;border-radius:8px">
+              ${(tpl.fields||[]).map(f=>`
+                <div class="poster-field ${this.state.chestEditorSelectedFieldId===f.id?'selected':''}" style="left:${f.x}px;top:${f.y}px;width:${f.maxWidth}px;height:${Math.max(24,f.fontSize*1.6)}px" data-id="${f.id}" onmousedown="App.startDragChestField(event,'${f.id}')" onclick="App.selectChestField('${f.id}')"></div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Fields</h3>
+          <div class="row" style="margin-bottom:8px;">
+            <button class="btn small" onclick="App.addChestField()">+ Add Text Field</button>
+            <div class="spacer"></div>
+            <label>Category</label>
+            <select class="input" style="min-width:160px" onchange="App.setChestTemplateCategory(this.value)">${this.data.categories.filter(c=>c!=="Popular").map(c=>`<option ${c===tpl.category?'selected':''}>${this.esc(c)}</option>`).join("")}</select>
+          </div>
+          <div id="chest-fields-list">
+            ${(tpl.fields||[]).map(f=> this.chestFieldEditorBlock(f)).join("") || '<div class="notice">No fields yet.</div>'}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+  chestFieldEditorBlock(f){
+    return `
+      <div class="card" style="background:#fff;border:1px dashed var(--border);margin-bottom:10px;">
+        <div class="row">
+          <strong>${this.esc(f.label||"Text Field")}</strong>
+          <div class="spacer"></div>
+          <button class="btn small" onclick="App.selectChestField('${f.id}')">Select</button>
+          <button class="btn small danger" onclick="App.removeChestField('${f.id}')">Remove</button>
+        </div>
+        <div class="grid cols-3" style="margin-top:8px;">
+          <div><label>Label</label><input class="input" value="${this.esc(f.label||"")}" onchange="App.updateChestField('${f.id}','label', this.value)"></div>
+          <div><label>X</label><input class="input" type="number" value="${f.x}" onchange="App.updateChestField('${f.id}','x', parseInt(this.value||'0',10))"></div>
+          <div><label>Y</label><input class="input" type="number" value="${f.y}" onchange="App.updateChestField('${f.id}','y', parseInt(this.value||'0',10))"></div>
+        </div>
+        <div class="grid cols-3" style="margin-top:8px;">
+          <div><label>Max Width</label><input class="input" type="number" value="${f.maxWidth}" onchange="App.updateChestField('${f.id}','maxWidth', parseInt(this.value||'0',10))"></div>
+          <div><label>Font Size</label><input class="input" type="number" value="${f.fontSize}" onchange="App.updateChestField('${f.id}','fontSize', parseInt(this.value||'16',10))"></div>
+          <div><label>Align</label><select class="input" onchange="App.updateChestField('${f.id}','align', this.value)"><option value="left" ${f.align==='left'?'selected':''}>Left</option><option value="center" ${f.align==='center'?'selected':''}>Center</option><option value="right" ${f.align==='right'?'selected':''}>Right</option></select></div>
+        </div>
+        <div class="grid cols-3" style="margin-top:8px;">
+          <div><label>Font Family</label><input class="input" value="${this.esc(f.fontFamily||'Inter, Arial, sans-serif')}" onchange="App.updateChestField('${f.id}','fontFamily', this.value)"></div>
+          <div><label>Color</label><input class="input" type="color" value="${f.color||'#000000'}" onchange="App.updateChestField('${f.id}','color', this.value)"></div>
+          <div><label>Uppercase</label><select class="input" onchange="App.updateChestField('${f.id}','uppercase', this.value==='yes')"><option value="no" ${!f.uppercase?'selected':''}>No</option><option value="yes" ${f.uppercase?'selected':''}>Yes</option></select></div>
+        </div>
+        <div style="margin-top:8px;">
+          <label>Content (tokens)</label>
+          <textarea class="input" rows="2" onchange="App.updateChestField('${f.id}','content', this.value)">${this.esc(f.content||"")}</textarea>
+          <div class="row small" style="gap:6px;flex-wrap:wrap;margin-top:6px;">
+            ${["{chest}","{name}","{category}"].map(t=>`<button class="btn small" type="button" onclick="this.previousElementSibling.value += ' ${t}'; this.previousElementSibling.dispatchEvent(new Event('change'))">${t}</button>`).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  },
+  selectChestField(id){ this.state.chestEditorSelectedFieldId=id; this.openChestTemplateEditor(this.state.chestEditorTemplateId); },
+  addChestField(){
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===this.state.chestEditorTemplateId); if (!tpl) return;
+    const f = { id:this.uid("cf"), label:"Text", x:Math.round(tpl.width*0.08), y:Math.round(tpl.height*0.08), maxWidth:Math.round(tpl.width*0.84), fontSize:Math.round(tpl.width*0.06), fontFamily:"Inter, Arial, sans-serif", color:"#000000", align:"left", uppercase:false, content:"Text" };
+    tpl.fields.push(f); this.save(); this.state.chestEditorSelectedFieldId=f.id; this.openChestTemplateEditor(tpl.id);
+  },
+  removeChestField(fid){
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===this.state.chestEditorTemplateId); if (!tpl) return;
+    tpl.fields = (tpl.fields||[]).filter(f=>f.id!==fid);
+    if (this.state.chestEditorSelectedFieldId===fid) this.state.chestEditorSelectedFieldId=null;
+    this.save(); this.openChestTemplateEditor(tpl.id);
+  },
+  updateChestField(fid,key,val){
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===this.state.chestEditorTemplateId); if (!tpl) return;
+    const f = (tpl.fields||[]).find(x=>x.id===fid); if (!f) return;
+    if (["x","y","maxWidth","fontSize"].includes(key)) { const n=Number(val); if (!Number.isNaN(n)) f[key]=n; }
+    else if (key==="uppercase") f.uppercase = !!val;
+    else f[key]=val;
+    this.save();
+  },
+  startDragChestField(e,fid){
+    e.preventDefault();
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===this.state.chestEditorTemplateId);
+    const f = tpl?.fields.find(x=>x.id===fid); if (!tpl || !f) return;
+    this.state._chestDrag = { tplId:tpl.id, fieldId:fid, startX:e.clientX, startY:e.clientY, startFX:f.x, startFY:f.y };
+    document.addEventListener("mousemove", this.onChestDragMove);
+    document.addEventListener("mouseup", this.onChestDragEnd);
+  },
+  onChestDragMove:(e)=>{
+    const st = App.state._chestDrag; if (!st) return;
+    const tpl = (App.data.chest.templates||[]).find(t=>t.id===st.tplId);
+    const f = tpl?.fields.find(x=>x.id===st.fieldId); if (!tpl||!f) return;
+    f.x = Math.max(0, Math.min(tpl.width-10, Math.round(st.startFX+(e.clientX-st.startX))));
+    f.y = Math.max(0, Math.min(tpl.height-10, Math.round(st.startFY+(e.clientY-st.startY))));
+    App.save();
+    const el = document.querySelector(`#chest-stage .poster-field[data-id="${f.id}"]`); if (el) { el.style.left=f.x+"px"; el.style.top=f.y+"px"; }
+  },
+  onChestDragEnd:()=>{ document.removeEventListener("mousemove", App.onChestDragMove); document.removeEventListener("mouseup", App.onChestDragEnd); App.state._chestDrag=null; },
+  setChestTemplateCategory(val){ const tpl=(this.data.chest.templates||[]).find(t=>t.id===this.state.chestEditorTemplateId); if(!tpl) return; tpl.category=val; this.save(); this.openChestTemplateEditor(tpl.id); },
+
+  chestGenerateView(){
+    const wrap = document.getElementById("chest-tab");
+    const cats = this.data.categories.filter(c=>c!=="Popular");
+    const teams = this.data.teams;
+    wrap.innerHTML = `
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Generate Cards</h3>
+          <div class="grid cols-3">
+            <div><label>Category</label><select id="chest-gen-cat" class="input" onchange="App.refreshChestTplSelect()">${cats.map(c=>`<option>${this.esc(c)}</option>`).join("")}</select></div>
+            <div><label>Team (optional)</label><select id="chest-gen-team" class="input"><option value="">All Teams</option>${teams.map(t=>`<option value="${t.id}">${this.esc(t.name)}</option>`).join("")}</select></div>
+            <div><label>Template</label><select id="chest-gen-tpl" class="input">${this.renderChestTplOptions(cats[0]||"")}</select></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:10px;">
+            <div><label>Include Name</label><select id="chest-inc-name" class="input"><option value="yes">Yes</option><option value="no">No</option></select></div>
+            <div><label>Sort</label><select id="chest-sort" class="input"><option value="chest">Chest No</option><option value="name">Name</option></select></div>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn primary" onclick="App.previewChestOne()">Preview First</button>
+            <button class="btn" onclick="App.batchChestSingles()">Download All (PNG per student)</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>A4 Sheets (Print)</h3>
+          <div class="grid cols-3">
+            <div><label>Columns</label><input id="sheet-cols" class="input" type="number" min="1" step="1" value="2"></div>
+            <div><label>Rows</label><input id="sheet-rows" class="input" type="number" min="1" step="1" value="4"></div>
+            <div><label>Margin (px)</label><input id="sheet-margin" class="input" type="number" min="0" step="5" value="60"></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:10px;">
+            <div><label>Gap (px)</label><input id="sheet-gap" class="input" type="number" min="0" step="5" value="24"></div>
+            <div><label>Orientation</label><select id="sheet-orient" class="input"><option value="portrait">Portrait (A4)</option><option value="landscape">Landscape (A4)</option></select></div>
+            <div><label>Crop Marks</label><select id="sheet-crops" class="input"><option value="yes">Yes</option><option value="no">No</option></select></div>
+          </div>
+          <div class="row" style="margin-top:10px;"><button class="btn primary" onclick="App.generateChestSheets()">Generate A4 Sheet(s)</button></div>
+        </div>
+      </div>
+      <div id="chest-preview-area"></div>
+    `;
+  },
+  renderChestTplOptions(cat){
+    const tpls = (this.data.chest.templates||[]).filter(t=>t.category===cat);
+    return tpls.length? tpls.map(t=>`<option value="${t.id}">${this.esc(t.name)}</option>`).join("") : '<option value="">No template</option>';
+  },
+  refreshChestTplSelect(){ const cat=document.getElementById("chest-gen-cat")?.value; const sel=document.getElementById("chest-gen-tpl"); if (sel) sel.innerHTML=this.renderChestTplOptions(cat); },
+  getChestStudents(cat, teamId, sortBy){
+    let list = this.data.students.filter(s=>s.category===cat && (!teamId || s.teamId===teamId));
+    if (sortBy==="name") list = list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+    else list = list.sort((a,b)=> String(a.chestNo||"").localeCompare(String(b.chestNo||"")));
+    return list;
+  },
+  buildChestTokens(stu, opts){ return { chest:String(stu.chestNo||""), name: opts.includeName? String(stu.name||""):"", category:String(stu.category||"") }; },
+  async renderChestToCanvas(tpl, tokens){
+    const canvas = document.createElement("canvas"); canvas.width=tpl.width; canvas.height=tpl.height;
+    const ctx = canvas.getContext("2d"); const bg = await this.loadImage(tpl.bgDataUrl); ctx.drawImage(bg,0,0, tpl.width, tpl.height);
+    for (const f of (tpl.fields||[])) {
+      const text = this.replaceTokens(f.content||"", tokens, f.uppercase);
+      await this.drawWrappedText(ctx, text, { x:f.x, y:f.y, maxWidth:f.maxWidth||Math.round(tpl.width*0.9), fontSize:f.fontSize||28, fontFamily:f.fontFamily||"Arial", color:f.color||"#000000", align:f.align||"left" });
+    }
+    return canvas;
+  },
+  async previewChestOne(){
+    const cat = document.getElementById("chest-gen-cat").value;
+    const teamId = document.getElementById("chest-gen-team").value||"";
+    const tplId = document.getElementById("chest-gen-tpl").value; if (!tplId) return alert("No template selected.");
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===tplId);
+    const sortBy = document.getElementById("chest-sort").value;
+    const includeName = document.getElementById("chest-inc-name").value==="yes";
+    const studs = this.getChestStudents(cat, teamId||null, sortBy); if (!studs.length) return alert("No students found.");
+    const tokens = this.buildChestTokens(studs[0], { includeName });
+    const canvas = await this.renderChestToCanvas(tpl, tokens);
+    const area = document.getElementById("chest-preview-area");
+    area.innerHTML = `
+      <div class="card">
+        <h3>Preview — ${this.esc(studs[0].name)} (#${this.esc(studs[0].chestNo)})</h3>
+        <div style="overflow:auto;border:1px solid var(--border);border-radius:12px;background:#000;display:grid;place-items:center;padding:10px;">${canvas.outerHTML}</div>
+        <div class="row" style="margin-top:8px;"><button class="btn" onclick="App.downloadCanvas('${this.sanitizeFileName('Chest_'+studs[0].chestNo)}.png')">Download PNG</button></div>
+      </div>
+    `;
+    this._lastCanvas = canvas;
+  },
+  async batchChestSingles(){
+    const cat = document.getElementById("chest-gen-cat").value;
+    const teamId = document.getElementById("chest-gen-team").value||"";
+    const tplId = document.getElementById("chest-gen-tpl").value; if (!tplId) return alert("No template selected.");
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===tplId);
+    const sortBy = document.getElementById("chest-sort").value;
+    const includeName = document.getElementById("chest-inc-name").value==="yes";
+    const studs = this.getChestStudents(cat, teamId||null, sortBy); if (!studs.length) return alert("No students found.");
+    let dirHandle=null; if (window.showDirectoryPicker && confirm("Save into a folder? (Recommended)")) { try { dirHandle = await window.showDirectoryPicker(); } catch {} }
+    let count=0;
+    for (const s of studs) {
+      const tokens = this.buildChestTokens(s, { includeName });
+      const canvas = await this.renderChestToCanvas(tpl, tokens);
+      const blob = await new Promise(res=>canvas.toBlob(res,"image/png",0.95));
+      const name = this.sanitizeFileName(`Chest_${s.chestNo}_${tpl.name}.png`);
+      if (dirHandle) {
+        try { const fh = await dirHandle.getFileHandle(name,{create:true}); const w=await fh.createWritable(); await w.write(blob); await w.close(); } catch {}
+      } else {
+        const url = URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      }
+      count++;
+    }
+    alert(`Generated ${count} card(s).`);
+  },
+  async generateChestSheets(){
+    const cat = document.getElementById("chest-gen-cat").value;
+    const teamId = document.getElementById("chest-gen-team").value||"";
+    const tplId = document.getElementById("chest-gen-tpl").value; if (!tplId) return alert("No template selected.");
+    const tpl = (this.data.chest.templates||[]).find(t=>t.id===tplId);
+    const sortBy = document.getElementById("chest-sort").value;
+    const includeName = document.getElementById("chest-inc-name").value==="yes";
+    const studs = this.getChestStudents(cat, teamId||null, sortBy); if (!studs.length) return alert("No students found.");
+    const cols = parseInt(document.getElementById("sheet-cols").value||"2",10);
+    const rows = parseInt(document.getElementById("sheet-rows").value||"4",10);
+    const margin = parseInt(document.getElementById("sheet-margin").value||"60",10);
+    const gap = parseInt(document.getElementById("sheet-gap").value||"24",10);
+    const orient = document.getElementById("sheet-orient").value;
+    const crop = document.getElementById("sheet-crops").value==="yes";
+    const sheetW = orient==="portrait"?2480:3508, sheetH = orient==="portrait"?3508:2480;
+
+    // render cards
+    const cards = [];
+    for (const s of studs) { const tokens=this.buildChestTokens(s,{includeName}); const c=await this.renderChestToCanvas(tpl, tokens); cards.push(c); }
+
+    const perSheet = cols*rows, sheets = Math.ceil(cards.length/perSheet);
+    const area = document.getElementById("chest-preview-area"); area.innerHTML = "";
+    for (let si=0; si<sheets; si++) {
+      const canvas = document.createElement("canvas"); canvas.width=sheetW; canvas.height=sheetH;
+      const ctx = canvas.getContext("2d"); ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,canvas.width,canvas.height);
+      const gridW = sheetW - margin*2, gridH = sheetH - margin*2;
+      const cellW = Math.floor((gridW - gap*(cols-1))/cols), cellH = Math.floor((gridH - gap*(rows-1))/rows);
+      for (let r=0; r<rows; r++) {
+        for (let c=0; c<cols; c++) {
+          const idx = si*perSheet + (r*cols + c); if (idx>=cards.length) break;
+          const card = cards[idx];
+          const scale = Math.min(cellW/card.width, cellH/card.height);
+          const dw = Math.round(card.width*scale), dh = Math.round(card.height*scale);
+          const x = margin + c*(cellW+gap) + Math.round((cellW - dw)/2);
+          const y = margin + r*(cellH+gap) + Math.round((cellH - dh)/2);
+          ctx.drawImage(card, x, y, dw, dh);
+
+          if (crop) {
+            ctx.strokeStyle="#000"; ctx.lineWidth=2; const cm=20;
+            const cx = margin + c*(cellW+gap), cy = margin + r*(cellH+gap);
+            ctx.beginPath(); ctx.moveTo(cx, cy+cm); ctx.lineTo(cx, cy); ctx.lineTo(cx+cm, cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx+cellW, cy+cm); ctx.lineTo(cx+cellW, cy); ctx.lineTo(cx+cellW-cm, cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx, cy+cellH-cm); ctx.lineTo(cx, cy+cellH); ctx.lineTo(cx+cm, cy+cellH); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx+cellW, cy+cellH-cm); ctx.lineTo(cx+cellW, cy+cellH); ctx.lineTo(cx+cellW-cm, cy+cellH); ctx.stroke();
+          }
+        }
+      }
+      const cardEl = document.createElement("div");
+      cardEl.className = "card";
+      cardEl.innerHTML = `
+        <h3>Sheet ${si+1} / ${sheets}</h3>
+        <div style="overflow:auto;border:1px solid var(--border);border-radius:12px;background:#fafafa;display:grid;place-items:center;padding:10px;">${canvas.outerHTML}</div>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn" onclick="(function(c){const a=document.createElement('a');a.download='Chest_Sheet_${si+1}.png';a.href=c.toDataURL('image/png');document.body.appendChild(a);a.click();document.body.removeChild(a);})(this.closest('.card').querySelector('canvas'))">Download Sheet PNG</button>
+        </div>
+      `;
+      area.appendChild(cardEl);
+    }
+  },
+
+  // Data & Branding
+  eventTabData(wrap){
+    wrap.innerHTML = `
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Export / Import</h2>
+          <div class="row">
+            <button class="btn" onclick="App.exportData()">Export JSON</button>
+            <label class="btn">Import JSON<input type="file" accept="application/json" style="display:none" onchange="App.importData(event)"></label>
+          </div>
+          <div class="hr"></div>
+          <h2>Reset</h2>
+          <div class="row"><button class="btn danger" onclick="App.confirmReset()">Reset to Defaults</button></div>
+        </div>
+        <div class="card">
+          <h2>Branding & Logo</h2>
+          <form onsubmit="App.updateBranding(event)">
+            <div class="grid cols-3">
+              <div><label>Header Logo</label><input id="brand-logo-file" class="input" type="file" accept="image/*"></div>
+              <div><label>Favicon</label><input id="brand-favicon-file" class="input" type="file" accept="image/*"></div>
+              <div>
+                <label>Accent Colors</label>
+                <div class="row"><input id="brand-accent" class="input" type="color" value="${this.esc(this.data.brand.accent)}"><input id="brand-accent2" class="input" type="color" value="${this.esc(this.data.brand.accent2)}"></div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Save Branding</button></div>
+          </form>
+          <div class="hr"></div>
+          <h2>Event Info</h2>
+          <form onsubmit="App.updateEventInfo(event)">
+            <div class="grid cols-2">
+              <div><label>Event Title</label><input id="ev-title" class="input" value="${this.esc(this.data.eventInfo.eventTitle)}" required></div>
+              <div><label>Organizer Name</label><input id="ev-org" class="input" value="${this.esc(this.data.eventInfo.orgName)}" required></div>
+            </div>
+            <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Save</button></div>
+          </form>
+          <div class="hr"></div>
+          <h2>Event Crew Credentials</h2>
+          <form onsubmit="App.updateEventCreds(event)">
+            <div class="grid cols-2">
+              <div><label>Username</label><input id="ev-user" class="input" value="${this.esc(this.data.eventUser.username)}" required></div>
+              <div><label>Password</label><input id="ev-pass" class="input" type="password" placeholder="new password" required></div>
+            </div>
+            <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Update Login</button></div>
+          </form>
+        </div>
+      </div>
+    `;
+  },
+  async updateBranding(ev){
+    ev.preventDefault();
+    const lf=document.getElementById("brand-logo-file").files[0];
+    const ff=document.getElementById("brand-favicon-file").files[0];
+    if (lf) this.data.brand.logoDataUrl = await this.fileToDataUrl(lf);
+    if (ff) this.data.brand.faviconDataUrl = await this.fileToDataUrl(ff);
+    this.data.brand.accent  = document.getElementById("brand-accent").value || this.data.brand.accent;
+    this.data.brand.accent2 = document.getElementById("brand-accent2").value || this.data.brand.accent2;
+    this.save(); alert("Branding updated.");
+  },
+  updateEventInfo(ev){ ev.preventDefault(); this.data.eventInfo.eventTitle=document.getElementById("ev-title").value.trim(); this.data.eventInfo.orgName=document.getElementById("ev-org").value.trim(); this.save(); alert("Event info saved."); },
+  updateEventCreds(ev){ ev.preventDefault(); const u=document.getElementById("ev-user").value.trim(); const p=document.getElementById("ev-pass").value.trim(); if (!u||!p) return alert("Enter username and password."); this.data.eventUser.username=u; this.data.eventUser.password=p; this.save(); alert("Credentials updated."); },
+
+  exportData(){ const blob=new Blob([JSON.stringify(this.data,null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="felizia_fest_data.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); },
+  importData(ev){ const f=ev.target.files[0]; if (!f) return; const r=new FileReader(); r.onload=()=>{ try{ const obj=JSON.parse(r.result); if (!obj||!obj.teams||!obj.categories) throw new Error("Invalid file"); this.data=obj; if(!this.data.posters) this.data.posters={templates:[]}; if(!this.data.chest) this.data.chest={templates:[]}; if(!this.data.brand) this.data.brand={logoDataUrl:null,faviconDataUrl:null,accent:"#106a3b",accent2:"#b88917"}; this.save(); alert("Data imported."); this.renderEventPortal(); }catch(e){ alert("Import failed: "+e.message); } }; r.readAsText(f); },
+  confirmReset(){ if (!confirm("Reset everything to defaults?")) return; this.reset(); },
+
+  /* ------------------------------
+     Team Portal
+  --------------------------------*/
+  renderTeamPortal(){
+    const app = document.getElementById("app"), team=this.getTeam(this.state.teamId);
+    const tabs = [
+      {id:"dashboard", label:"Dashboard"},
+      {id:"students", label:"Students"},
+      {id:"enroll", label:"Enroll"},
+      {id:"competitions", label:"Competitions"},
+      {id:"participation", label:"Participation List"},
+      {id:"by_category", label:"By Category"}
+    ];
+    app.innerHTML = `
+      <div class="card">
+        <div class="row">
+          <div><h2>${this.esc(team.name)} — Team Portal</h2><div class="muted">${this.data.portalLocked?"Portal is locked (view only)":"Portal is open"}</div></div>
+          <div class="spacer"></div><span class="tag ${this.data.portalLocked?'red':'green'}">${this.data.portalLocked?'Locked 🔒':'Unlocked 🔓'}</span>
+        </div>
+        <div class="nav">${tabs.map(t=>`<button class="tab ${this.state.teamTab===t.id?'active':''}" onclick="App.teamSwitchTab('${t.id}')">${t.label}</button>`).join("")}</div>
+        <div id="team-tab"></div>
+      </div>
+    `;
+    this.renderTeamTab();
+  },
+  teamSwitchTab(id){ this.state.teamTab = id; this.renderTeamPortal(); },
+  renderTeamTab(){
+    const wrap = document.getElementById("team-tab");
+    if (this.state.teamTab === "dashboard") return this.teamTabDashboard(wrap);
+    if (this.state.teamTab === "students") return this.teamTabStudents(wrap);
+    if (this.state.teamTab === "enroll") return this.teamTabEnroll(wrap);
+    if (this.state.teamTab === "competitions") return this.teamTabCompetitions(wrap);
+    if (this.state.teamTab === "participation") return this.teamTabParticipation(wrap);
+    if (this.state.teamTab === "by_category") return this.teamTabByCategory(wrap);
+  },
+  teamTabDashboard(wrap){
+    const teamId = this.state.teamId;
+    const studs = this.studentsByTeam(teamId);
+    const entries = this.entriesByTeam(teamId);
+    const today = this.todayStr();
+    const todays = this.data.competitions.filter(c=>c.date===today);
+    wrap.innerHTML = `
+      <div class="grid cols-3">
+        <div class="card"><div class="muted">Students</div><div style="font-size:24px;font-weight:800;">${studs.length}</div></div>
+        <div class="card"><div class="muted">Entries</div><div style="font-size:24px;font-weight:800;">${entries.length}</div></div>
+        <div class="card"><div class="muted">Competitions Today</div><div style="font-size:24px;font-weight:800;">${todays.length}</div></div>
+      </div>
+      <div class="card"><h2>Today’s Competitions</h2><div class="hr"></div>
+        ${todays.length? todays.map(c=>{
+          const my = this.entriesByCompetition(c.id).filter(e=>e.teamId===teamId);
+          return `<div class="card">
+            <div class="row"><strong>${this.esc(c.name)}</strong><div class="spacer"></div><span class="tag">${this.esc(c.category)}</span>${c.time?`<span class="tag">${this.esc(c.time)}</span>`:""}</div>
+            <ul class="muted" style="font-size:13px">${my.length? my.map(e=>`<li>${this.esc(this.entryLabel(e))}</li>`).join("") : '<li class="muted">No participants from your team.</li>'}</ul>
+          </div>`;
+        }).join("") : '<div class="notice">No competitions scheduled today.</div>'}
+      </div>
+    `;
+  },
+  teamTabStudents(wrap){
+    const teamId = this.state.teamId;
+    const studs = this.studentsByTeam(teamId).slice().sort((a,b)=> String(a.chestNo||"").localeCompare(String(b.chestNo||"")));
+    wrap.innerHTML = `
+      <div class="row"><h2>Students (${studs.length})</h2><div class="spacer"></div>${this.data.portalLocked?'':'<button class="btn" onclick="App.teamShowAddStudent()">+ Add Student</button>'}</div>
+      <div id="student-add"></div>
+      <div class="table-wrap" style="margin-top:10px;"><table>
+        <thead><tr><th>Chest No</th><th>Name</th><th>Category</th><th>Competitions</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${studs.map(s=>{
+            const comps = this.entriesByStudent(s.id).map(e=>this.getCompetition(e.competitionId)?.name).filter(Boolean);
+            return `<tr>
+              <td>#${this.esc(s.chestNo)}</td><td>${this.esc(s.name)}</td><td>${this.esc(s.category)}</td><td>${this.esc(comps.join(", ")||"-")}</td>
+              <td class="row"><button class="btn small" onclick="App.teamAssignCompetitions('${s.id}')">Assign</button>${this.data.portalLocked?'': `<button class="btn small danger" onclick="App.teamDeleteStudent('${s.id}')">Delete</button>`}</td>
+            </tr>`;
+          }).join("") || '<tr><td colspan="5" class="muted">No students yet.</td></tr>'}
+        </tbody>
+      </table></div>
+    `;
+  },
+  teamShowAddStudent(){
+    if (this.data.portalLocked) return alert("Portal is locked.");
+    const d = document.getElementById("student-add");
+    d.innerHTML = `
+      <div class="card">
+        <h3>Add Student</h3>
+        <form onsubmit="App.teamAddStudent(event)">
+          <div class="grid cols-3">
+            <div><label>Chest Number</label><input class="input" id="stu-chest" required placeholder="e.g., 102"></div>
+            <div><label>Name</label><input class="input" id="stu-name" required placeholder="Student name"></div>
+            <div><label>Category</label><select class="input" id="stu-cat">${this.data.categories.filter(c=>c!=="Popular").map(c=>`<option>${this.esc(c)}</option>`).join("")}</select></div>
+          </div>
+          <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Add</button><button class="btn" type="button" onclick="document.getElementById('student-add').innerHTML=''">Cancel</button></div>
+        </form>
+      </div>
+    `;
+  },
+  teamAddStudent(ev){
+    ev.preventDefault(); if (this.data.portalLocked) return alert("Portal is locked.");
+    const chest = document.getElementById("stu-chest").value.trim();
+    const name  = document.getElementById("stu-name").value.trim();
+    const cat   = document.getElementById("stu-cat").value;
+    if (!chest || !name) return alert("Enter chest number and name.");
+    const exists = this.data.students.some(s=> String(s.chestNo).toLowerCase()===chest.toLowerCase()); if (exists) return alert("Chest number already exists.");
+    this.data.students.push({ id:this.uid("stu"), teamId:this.state.teamId, chestNo:chest, name, category:cat }); this.save();
+    document.getElementById("student-add").innerHTML = ""; this.teamTabStudents(document.getElementById("team-tab"));
+  },
+  teamDeleteStudent(stuId){
+    if (this.data.portalLocked) return alert("Portal is locked.");
+    const s = this.getStudent(stuId); if (!s) return;
+    const hasResult = this.data.results.some(r=>{ const e=this.getEntry(r.entryId); return e && e.memberStudentIds.includes(stuId); });
+    if (hasResult) return alert("Cannot delete student with results.");
+    const hasEntries = this.entriesByStudent(stuId).length>0; if (hasEntries && !confirm("Remove this student and their entries?")) return;
+    this.data.entries = this.data.entries.map(e=>{ if (e.memberStudentIds.includes(stuId)) e.memberStudentIds=e.memberStudentIds.filter(id=>id!==stuId); return e; }).filter(e=>e.memberStudentIds.length>0);
+    this.data.students = this.data.students.filter(x=>x.id!==stuId);
+    this.save(); this.teamTabStudents(document.getElementById("team-tab"));
+  },
+
+  compsAvailableForStudent(s){ return this.data.competitions.filter(c=>c.category===s.category || c.category==="Popular").sort((a,b)=> (a.date||"").localeCompare(b.date||"") || a.name.localeCompare(b.name)); },
+  teamAssignCompetitions(stuId){
+    const s = this.getStudent(stuId); if (!s) return;
+    const comps = this.compsAvailableForStudent(s);
+    const my    = this.entriesByStudent(stuId).map(e=>e.competitionId);
+    const app   = document.getElementById("app");
+    app.innerHTML = `
+      <div class="row" style="margin-bottom:8px;"><button class="btn" onclick="App.renderTeamPortal()">← Back</button></div>
+      <div class="card">
+        <h2>Assign Competitions • ${this.esc(s.name)} (#${this.esc(s.chestNo)})</h2>
+        <div class="muted">${this.esc(s.category)} — Competitions in this category or “Popular”.</div>
+        <div class="hr"></div>
+        <div class="grid">
+          ${comps.length? comps.map(c=>{
+            const teamEntries = this.entriesByCompetition(c.id).filter(e=>e.teamId===this.state.teamId);
+            const limitReached = teamEntries.length >= c.teamEntryLimit;
+            const alreadyIn = my.includes(c.id);
+            const disabled = (this.data.portalLocked || c.locked);
+            return `<div class="card">
+              <div class="row"><div><strong>${this.esc(c.name)}</strong><div class="muted">${this.esc(c.category)} • ${c.isGroup?'Group':'Individual'} • Limit/Team: ${c.teamEntryLimit} ${c.date? "• "+this.fmtDate(c.date):""} ${c.time?" "+c.time:""}</div></div><div class="spacer"></div><span class="tag">${teamEntries.length}/${c.teamEntryLimit}</span></div>
+              ${c.isGroup? `<div class="row" style="margin-top:8px;"><button class="btn small" ${disabled?'disabled':''} onclick="App.teamCreateGroup('${c.id}')">Create Group Entry</button></div>` :
+              `<div class="row" style="margin-top:8px;">${alreadyIn? `<button class="btn small danger" ${disabled?'disabled':''} onclick="App.teamToggleIndividual('${stuId}','${c.id}', false)">Remove</button>` :
+              `<button class="btn small" ${(!disabled && !limitReached)?'':'disabled'} onclick="App.teamToggleIndividual('${stuId}','${c.id}', true)">Add</button>`}</div>`}
+              <div class="hr"></div>
+              <div class="muted" style="font-size:13px">Your team entries here:</div>
+              <ul class="muted" style="font-size:13px">
+                ${this.entriesByCompetition(c.id).filter(e=>e.teamId===this.state.teamId).map(e=>`<li>${this.esc(this.entryLabel(e))} ${!disabled?`<button class="btn small danger" onclick="App.teamRemoveEntry('${e.id}')">Remove</button>`:""}</li>`).join("") || '<li class="muted">None</li>'}
+              </ul>
+            </div>`;
+          }).join("") : '<div class="notice">No competitions published yet.</div>'}
+        </div>
+      </div>
+    `;
+  },
+  teamToggleIndividual(stuId, compId, add){
+    if (this.data.portalLocked) return alert("Portal is locked.");
+    const comp = this.getCompetition(compId); if (!comp || comp.isGroup) return;
+    const existingForTeam = this.entriesByCompetition(compId).filter(e=>e.teamId===this.state.teamId);
+    const already = existingForTeam.find(e=> e.entryType==='individual' && e.memberStudentIds[0]===stuId);
+    if (add) {
+      if (already) return;
+      if (existingForTeam.length >= comp.teamEntryLimit) return alert("Team limit reached.");
+      const stu = this.getStudent(stuId); if (!(comp.category===stu.category || comp.category==="Popular")) return alert("Not eligible.");
+      this.data.entries.push({ id:this.uid("ent"), teamId:this.state.teamId, competitionId:compId, entryType:"individual", memberStudentIds:[stuId], createdAt:Date.now() });
+    } else {
+      if (!already) return;
+      const hasResult = this.data.results.some(r=>r.entryId===already.id); if (hasResult) return alert("Cannot remove: entry has results.");
+      this.data.attendance = this.data.attendance.filter(a=>a.entryId!==already.id);
+      this.data.entries = this.data.entries.filter(e=>e.id!==already.id);
+    }
+    this.save(); this.teamAssignCompetitions(stuId);
+  },
+  teamCreateGroup(compId){
+    if (this.data.portalLocked) return alert("Portal is locked.");
+    const comp = this.getCompetition(compId); if (!comp || !comp.isGroup) return;
+    const teamId = this.state.teamId;
+    const eligible = this.studentsByTeam(teamId).filter(s=> comp.category==="Popular" || s.category===comp.category);
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="row" style="margin-bottom:8px;"><button class="btn" onclick="App.renderTeamPortal()">← Back</button></div>
+      <div class="card">
+        <h2>Create Group Entry • ${this.esc(comp.name)}</h2>
+        <div class="muted">Select members from your team${comp.maxGroupSize? " (Max "+comp.maxGroupSize+")":""}.</div>
+        <div class="hr"></div>
+        <form onsubmit="App.teamSubmitGroup(event,'${compId}')">
+          <div class="grid">${eligible.map(s=> `<label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" value="${s.id}"> ${this.esc(s.name)} (#${this.esc(s.chestNo)}) — ${this.esc(s.category)}</label>`).join("") || '<div class="muted">No eligible students.</div>'}</div>
+          <div class="row" style="margin-top:10px;"><button class="btn primary" type="submit">Create Group</button><button class="btn" type="button" onclick="App.renderTeamPortal()">Cancel</button></div>
+        </form>
+      </div>
+    `;
+  },
+  teamSubmitGroup(ev, compId){
+    ev.preventDefault(); if (this.data.portalLocked) return alert("Portal is locked.");
+    const comp = this.getCompetition(compId); const teamId=this.state.teamId;
+    const selected = Array.from(ev.target.querySelectorAll('input[type="checkbox"]:checked')).map(i=>i.value);
+    if (selected.length===0) return alert("Select at least one member.");
+    if (comp.maxGroupSize && selected.length>comp.maxGroupSize) return alert(`Max group size is ${comp.maxGroupSize}.`);
+    const existingForTeam = this.entriesByCompetition(compId).filter(e=>e.teamId===teamId);
+    if (existingForTeam.length >= comp.teamEntryLimit) return alert("Team limit reached.");
+    this.data.entries.push({ id:this.uid("ent"), teamId, competitionId:compId, entryType:"group", memberStudentIds:selected, createdAt:Date.now() });
+    this.save(); alert("Group entry created."); this.renderTeamPortal();
+  },
+  teamRemoveEntry(entryId){
+    if (this.data.portalLocked) return alert("Portal is locked.");
+    const e = this.getEntry(entryId); if (!e || e.teamId!==this.state.teamId) return;
+    const hasResult = this.data.results.some(r=>r.entryId===entryId); if (hasResult) return alert("Cannot remove: entry has results.");
+    this.data.attendance = this.data.attendance.filter(a=>a.entryId!==entryId);
+    this.data.entries = this.data.entries.filter(x=>x.id!==entryId);
+    this.save(); this.renderTeamPortal();
+  },
+  teamTabCompetitions(wrap){
+    const teamId = this.state.teamId;
+    const comps = this.data.competitions.slice().sort((a,b)=> (a.category||"").localeCompare(b.category||"") || (a.date||"").localeCompare(b.date||"") || a.name.localeCompare(b.name));
+    wrap.innerHTML = `
+      <div class="grid">
+        ${comps.map(c=>{
+          const my = this.entriesByCompetition(c.id).filter(e=>e.teamId===teamId);
+          const dt = [c.date?this.fmtDate(c.date):"", c.time||""].filter(Boolean).join(" ");
+          return `<div class="card">
+            <div class="row"><div><strong>${this.esc(c.name)}</strong><div class="muted">${this.esc(c.category)} • ${c.isGroup?'Group':'Individual'} • Limit: ${c.teamEntryLimit} • ${this.esc(dt||"")}</div></div><div class="spacer"></div><span class="tag">${my.length} from your team</span></div>
+            <ul class="muted" style="font-size:13px">${my.length? my.map(e=>`<li>${this.esc(this.entryLabel(e))}</li>`).join("") : '<li class="muted">No participants from your team.</li>'}</ul>
+          </div>`;
+        }).join("") || '<div class="notice">No competitions published yet.</div>'}
+      </div>
+    `;
+  },
+  teamTabParticipation(wrap){
+    const teamId = this.state.teamId;
+    const studs = this.studentsByTeam(teamId).slice().sort((a,b)=> String(a.chestNo||"").localeCompare(String(b.chestNo||"")));
+    wrap.innerHTML = `
+      <div class="row"><h2>Team Participation List</h2><div class="spacer"></div><button class="btn" onclick="App.exportTeamCSV('${teamId}')">Download CSV</button></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Chest No</th><th>Name</th><th>Category</th><th>Competitions</th></tr></thead>
+        <tbody>
+          ${studs.map(s=>{
+            const comps = this.entriesByStudent(s.id).map(e=>this.getCompetition(e.competitionId)?.name).filter(Boolean);
+            return `<tr><td>#${this.esc(s.chestNo)}</td><td>${this.esc(s.name)}</td><td>${this.esc(s.category)}</td><td>${this.esc(comps.join(", ")||"-")}</td></tr>`;
+          }).join("") || '<tr><td colspan="4" class="muted">No students yet.</td></tr>'}
+        </tbody></table></div>
+    `;
+  },
+  teamTabByCategory(wrap){
+    const teamId = this.state.teamId; const cats = this.data.categories;
+    const blocks = cats.map(cat=>{
+      const rows = this.entriesByCategory(cat, teamId);
+      const body = rows.length? rows.map(r=>`<tr><td>${this.esc(r.compName)}</td><td>${this.esc(r.entryLabel)}</td><td>${r.present?"✅":""}</td><td>${this.esc(r.code)}</td></tr>`).join("") : `<tr><td colspan="4" class="muted">No entries in this category.</td></tr>`;
+      const studs = this.data.students.filter(s=>s.teamId===teamId && s.category===cat).sort((a,b)=> String(a.chestNo||"").localeCompare(String(b.chestNo||"")));
+      const studsBody = studs.length? studs.map(s=>`<tr><td>#${this.esc(s.chestNo)}</td><td>${this.esc(s.name)}</td></tr>`).join("") : '<tr><td colspan="2" class="muted">No students.</td></tr>';
+      return `<div class="card"><h2>${this.esc(cat)}</h2>
+        <div class="grid cols-2">
+          <div class="card"><h3 class="section-title">Entries</h3><div class="table-wrap"><table><thead><tr><th>Competition</th><th>Entry</th><th>Present</th><th>Code</th></tr></thead><tbody>${body}</tbody></table></div></div>
+          <div class="card"><h3 class="section-title">Students</h3><div class="table-wrap"><table><thead><tr><th>Chest No</th><th>Name</th></tr></thead><tbody>${studsBody}</tbody></table></div></div>
+        </div>
+      </div>`;
+    }).join("");
+    wrap.innerHTML = `<div class="grid">${blocks}</div>`;
+  },
+  exportTeamCSV(teamId){
+    const team = this.getTeam(teamId);
+    const studs = this.studentsByTeam(teamId);
+    const rows = [["Chest No","Name","Category","Competitions"]];
+    for (const s of studs) {
+      const comps = this.entriesByStudent(s.id).map(e=>this.getCompetition(e.competitionId)?.name).filter(Boolean).join("; ");
+      rows.push([s.chestNo, s.name, s.category, comps]);
+    }
+    const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `${team.name}_participation.csv`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  /* ------------------------------
+     Init
+  --------------------------------*/
+  init(){ this.renderHeaderSession(); this.routeHome(); this.applyBrand(); }
+};
+
+window.App = App; App.init();
+</script>
+</body>
+</html>
